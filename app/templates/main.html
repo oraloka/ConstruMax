@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materiales de Construcción</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">Corona</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Categorías</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+                </ul>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary ms-3">Iniciar sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Banner -->
+    <section class="banner">
+        <div class="container">
+            <h1 class="display-5 fw-bold">Materiales de Construcción</h1>
+            <p class="lead">Encuentra los materiales para la construcción de tu proyecto o remodelación de tus espacios. Productos de alta calidad e innovadores con mayor resistencia, durabilidad y protección.</p>
+            <a href="#categorias" class="btn btn-warning btn-lg">Ver categorías</a>
+        </div>
+    </section>
+
+    <!-- Categorías -->
+    <section id="categorias" class="py-5">
+        <div class="container">
+            <h2 class="mb-4">Categorías principales</h2>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="card category-card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Pegantes</h5>
+                            <p class="card-text">Soluciones para unir y fijar materiales con máxima resistencia.</p>
+                            <a href="{{ url_for('productos.productos_categoria', categoria='pegantes') }}" class="btn btn-outline-primary">Ver productos</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card category-card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Boquillas</h5>
+                            <p class="card-text">Acabados perfectos para juntas y terminaciones.</p>
+                            <a href="{{ url_for('productos.productos_categoria', categoria='boquillas') }}" class="btn btn-outline-primary">Ver productos</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card category-card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Impermeabilizantes</h5>
+                            <p class="card-text">Protege tus espacios contra la humedad y filtraciones.</p>
+                            <a href="{{ url_for('productos.productos_categoria', categoria='impermeabilizantes') }}" class="btn btn-outline-primary">Ver productos</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card category-card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Obra gris</h5>
+                            <p class="card-text">Materiales esenciales para la estructura y base de tu proyecto.</p>
+                            <a href="{{ url_for('productos.productos_categoria', categoria='obra gris') }}" class="btn btn-outline-primary">Ver productos</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Productos destacados -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="mb-4">Productos destacados</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <img src="https://via.placeholder.com/350x200?text=Producto+1" class="card-img-top" alt="Producto 1">
+                        <div class="card-body">
+                            <h5 class="card-title">Cemento Alta Resistencia</h5>
+                            <p class="card-text">Ideal para obras que requieren máxima durabilidad y fuerza.</p>
+                            <a href="#" class="btn btn-primary">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <img src="https://via.placeholder.com/350x200?text=Producto+2" class="card-img-top" alt="Producto 2">
+                        <div class="card-body">
+                            <h5 class="card-title">Impermeabilizante Premium</h5>
+                            <p class="card-text">Protección superior contra filtraciones y humedad.</p>
+                            <a href="#" class="btn btn-primary">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <img src="https://via.placeholder.com/350x200?text=Producto+3" class="card-img-top" alt="Producto 3">
+                        <div class="card-body">
+                            <h5 class="card-title">Ladrillo Rojo Clásico</h5>
+                            <p class="card-text">Ladrillo de alta calidad fabricado en arcilla cocida, resistente y duradero, ideal para la construcción de muros, fachadas y estructuras sólidas.</p>
+                            <a href="#" class="btn btn-primary">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer mt-5">
+        <div class="container">
+            <p>&copy; 2025 Corona - Todos los derechos reservados</p>
+            <div>
+                <a href="#" class="me-2">Facebook</a>
+                <a href="#" class="me-2">Instagram</a>
+                <a href="#">YouTube</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

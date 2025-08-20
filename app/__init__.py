@@ -1,0 +1,35 @@
+from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+import os
+
+db = SQLAlchemy()
+login_manager = LoginManager()
+
+def create_app():
+    app = Flask(__name__)
+    app.config['SECRET_KEY'] = os.urandom(24)
+    app.config.from_object('config.Config')
+
+    db.init_app(app)
+    login_manager.init_app(app)
+    login_manager.login_view = 'auth.login'
+
+    @login_manager.user_loader
+    def load_user(idUser):
+        from .models.users import Users
+        return Users.query.get(int(idUser))
+
+    from app.routes import auth
+    from app.routes import register
+    from app.routes import users_route
+    app.register_blueprint(auth.bp)
+    app.register_blueprint(register.bp)
+    app.register_blueprint(users_route.bp)
+
+    # Ruta principal para la vista principal
+    @app.route('/')
+    def main():
+        return render_template('main.html')
+
+    return app

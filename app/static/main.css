@@ -1,0 +1,85 @@
+/* main.css - estilos para la vista principal */
+
+/* Banner animado con desplazamiento suave y efecto de fade */
+.banner {
+    background: linear-gradient(90deg, #005baa 60%, #fff 100%);
+    color: #fff;
+    padding: 40px 0;
+    text-align: center;
+    animation: fadeInSlide 1.5s ease-in-out;
+}
+
+@keyframes fadeInSlide {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Tarjetas de categorías con hover animado */
+.category-card {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    border: none;
+    animation: cardPop 0.8s ease-out backwards;
+}
+
+.category-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px) scale(1.02);
+}
+
+@keyframes cardPop {
+    0% { opacity: 0; transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Productos destacados con animación al cargar y hover */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.card-img-top {
+    transition: transform 0.5s ease;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.1);
+}
+
+/* Footer con animación de fade-in */
+.footer {
+    background: #f8f9fa;
+    padding: 20px 0;
+    text-align: center;
+    color: #888;
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Animación para botones */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajustes responsivos y retrasos para animaciones secuenciales */
+.row > .col-md-3:nth-child(1) .category-card { animation-delay: 0.1s; }
+.row > .col-md-3:nth-child(2) .category-card { animation-delay: 0.2s; }
+.row > .col-md-3:nth-child(3) .category-card { animation-delay: 0.3s; }
+.row > .col-md-3:nth-child(4) .category-card { animation-delay: 0.4s; }
+
+.row > .col-md-4:nth-child(1) .card { animation-delay: 0.1s; }
+.row > .col-md-4:nth-child(2) .card { animation-delay: 0.2s; }
+.row > .col-md-4:nth-child(3) .card { animation-delay: 0.3s; }
