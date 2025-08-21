@@ -1,133 +1,120 @@
-/* main.css - estilos para la vista principal */
+/* Unificación de estilos para toda la app */
+body {
+    background: linear-gradient(135deg, #F5F5F5, #EDE4D3);
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    color: #1A1A1A;
+}
 
-/* Banner animado con desplazamiento suave, efecto de fade y glow */
-.banner {
+.banner, .login-container {
     background: linear-gradient(90deg, #40BFFF 40%, #F5F5F5 80%);
     color: #1A1A1A;
     padding: 60px 0;
     text-align: center;
-    position: relative;
-    overflow: hidden;
-    animation: fadeInSlide 1.5s ease-in-out, pulseGlow 4s infinite alternate;
-    box-shadow: inset 0 -5px 15px rgba(64, 191, 255, 0.3);
-}
-
-.banner::before {
-    content: "\f55a"; /* Ícono de montaña (referencia a South Park) */
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    color: #FFC107;
-    font-size: 2.5em;
-    text-shadow: 0 0 10px #FFC107, 0 0 20px #FF4040;
-    animation: bounce 2s infinite;
-}
-
-@keyframes fadeInSlide {
-    0% { opacity: 0; transform: translateY(30px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulseGlow {
-    0% { box-shadow: 0 0 10px #40BFFF; }
-    100% { box-shadow: 0 0 20px #40BFFF, 0 0 30px #FF4040; }
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
-/* Tarjetas de categorías con hover animado y efecto 3D */
-.category-card {
-    transition: box-shadow 0.3s ease, transform 0.3s ease, background 0.3s ease;
-    border: none;
-    background: linear-gradient(135deg, #EDE4D3, #F5F5F5);
-    animation: cardPop 0.8s ease-out backwards;
     border-radius: 15px;
-    overflow: hidden;
-    position: relative;
+    box-shadow: 0 4px 24px rgba(64,191,255,0.08);
+    margin-bottom: 32px;
 }
 
-.category-card:hover {
-    box-shadow: 0 10px 30px rgba(64, 191, 255, 0.3), 0 0 15px rgba(255, 64, 64, 0.2);
+.category-card, .pegante-card, .card {
+    border-radius: 15px;
+    background: linear-gradient(135deg, #EDE4D3, #F5F5F5);
+    box-shadow: 0 4px 16px rgba(255,193,7,0.10);
+    border: 1px solid #FFC107;
+    transition: box-shadow 0.3s, transform 0.3s, border 0.3s;
+}
+.category-card:hover, .pegante-card:hover, .card:hover {
+    box-shadow: 0 10px 30px rgba(255,193,7,0.25), 0 0 15px rgba(255,64,64,0.15);
+    border-color: #FF4040;
     transform: translateY(-8px) scale(1.03);
-    background: linear-gradient(135deg, #F5F5F5, #EDE4D3);
 }
-
-.category-card .card-body {
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 10px;
-}
-
-@keyframes cardPop {
-    0% { opacity: 0; transform: scale(0.85) rotate(-5deg); }
-    100% { opacity: 1; transform: scale(1) rotate(0); }
-}
-
-/* Productos destacados con animación al cargar y hover */
-.card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-    background: linear-gradient(135deg, #EDE4D3, #F5F5F5);
-    overflow: hidden;
-    border-radius: 15px;
-}
-
-.card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 10px 30px rgba(255, 193, 7, 0.25), 0 0 15px rgba(255, 64, 64, 0.15);
-    border: 2px solid #FFC107;
-}
-
-.card-img-top {
-    transition: transform 0.5s ease, filter 0.5s ease;
+.card-img-top, .pegante-card img {
     border-radius: 15px 15px 0 0;
+    transition: transform 0.5s, filter 0.5s;
+}
+.card:hover .card-img-top, .pegante-card:hover img {
+    transform: scale(1.10);
+    filter: brightness(1.1) contrast(1.05);
 }
 
-.card:hover .card-img-top {
-    transform: scale(1.15);
-    filter: brightness(1.2) contrast(1.1);
-}
-
-/* Footer con animación de fade-in y efecto de neón */
 .footer {
     background: linear-gradient(90deg, #F5F5F5, #EDE4D3);
     padding: 30px 0;
     text-align: center;
     color: #666666;
-    position: relative;
-    animation: fadeIn 1s ease-in-out;
     border-top: 2px solid #FF4040;
+    border-radius: 0 0 15px 15px;
 }
 
-.footer::before {
-    content: "\f1fc"; /* Ícono de TV (referencia a la serie) */
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    position: absolute;
-    bottom: 15px;
-    right: 20px;
-    color: #FF4040;
-    font-size: 2em;
-    text-shadow: 0 0 10px #FF4040, 0 0 20px #40BFFF;
-    animation: rotate 3s infinite linear;
-}
-
-@keyframes fadeIn {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-}
-
-@keyframes rotate {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Animación para botones con efecto neón */
-.btn {
-    transition: all 0.3s ease;
+.btn-primary {
     background: linear-gradient(45deg, #FF4040, #E60000);
-    color: #
+    border: none;
+    color: #F5F5F5;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 12px 25px;
+    transition: all 0.3s;
+}
+.btn-primary:hover {
+    background: linear-gradient(45deg, #E60000, #FF4040);
+    box-shadow: 0 6px 18px rgba(255,64,64,0.4);
+    transform: translateY(-3px);
+}
+.btn-secondary {
+    background: #EDE4D3;
+    color: #FF4040;
+    border: 1px solid #FF4040;
+    border-radius: 8px;
+    padding: 12px 25px;
+    transition: all 0.3s;
+}
+.btn-secondary:hover {
+    background: #D4C8B2;
+    color: #E60000;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(255,64,64,0.2);
+}
+.form-control {
+    border-radius: 10px;
+    border: 2px solid #D1D5DB;
+    padding: 12px;
+    background: linear-gradient(135deg, #EDE4D3, #F5F5F5);
+    color: #1A1A1A;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+.form-control:focus {
+    border-color: #40BFFF;
+    box-shadow: 0 0 12px rgba(64,191,255,0.4);
+    transform: scale(1.02);
+    outline: none;
+}
+.form-group label {
+    color: #FF4040;
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
+    text-shadow: 0 0 4px rgba(255,64,64,0.3);
+}
+.flash-message, .alert-info, .alert-warning {
+    background: #FEF3C7;
+    color: #92400E;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 25px;
+    font-size: 1.15rem;
+    border-left: 5px solid #FFC107;
+    box-shadow: 0 0 15px rgba(255,193,7,0.3);
+}
+@media (max-width: 768px) {
+    .banner, .login-container {
+        margin-top: 30px;
+        padding: 25px 20px;
+    }
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .form-control {
+        font-size: 0.95rem;
+    }
+}

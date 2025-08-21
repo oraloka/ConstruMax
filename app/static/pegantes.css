@@ -1,16 +1,17 @@
-/* Estilos para la vista de pegantes */
+/* Unificación de estilos para la vista de pegantes */
 .pegante-card {
-    border-radius: 12px;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #EDE4D3, #F5F5F5);
+    box-shadow: 0 4px 16px rgba(255,193,7,0.10);
     border: 1px solid #FFC107;
-    background: #EDE4D3;
+    transition: box-shadow 0.3s, transform 0.3s, border 0.3s;
     overflow: hidden;
     position: relative;
 }
 .pegante-card:hover {
-    box-shadow: 0 4px 16px rgba(255, 193, 7, 0.3);
-    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(255,193,7,0.25), 0 0 15px rgba(255,64,64,0.15);
     border-color: #FF4040;
+    transform: translateY(-8px) scale(1.03);
 }
 .pegante-card .card-title {
     color: #FFC107;
@@ -24,26 +25,22 @@
     color: #666666;
 }
 .pegante-card img {
-    border-radius: 12px 12px 0 0;
+    border-radius: 15px 15px 0 0;
     object-fit: cover;
     height: 180px;
-    transition: filter 0.3s ease;
+    transition: filter 0.3s, transform 0.3s;
 }
 .pegante-card:hover img {
     filter: brightness(1.1);
+    transform: scale(1.10);
 }
-.pegante-card::before {
-    content: "\f0c1"; /* Ícono de pegamento (referencia a pegantes) */
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: #40BFFF;
-    font-size: 1.5em;
-}
-.alert-info {
-    background-color: #F5F5F5;
-    color: #FFC107;
-    border: 1px solid #FF4040;
+.alert-info, .flash-message, .alert-warning {
+    background: #FEF3C7;
+    color: #92400E;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 25px;
+    font-size: 1.15rem;
+    border-left: 5px solid #FFC107;
+    box-shadow: 0 0 15px rgba(255,193,7,0.3);
 }
