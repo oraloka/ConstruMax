@@ -1,31 +1,49 @@
 /* Estilos para la vista de obra gris */
 .obra-gris-card {
     border-radius: 12px;
-    transition: box-shadow 0.2s;
-    border: 1px solid #e3e3e3;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    border: 1px solid #FFC107;
+    background: #EDE4D3;
+    overflow: hidden;
+    position: relative;
 }
 .obra-gris-card:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-    border-color: #6c757d;
+    box-shadow: 0 4px 16px rgba(255, 193, 7, 0.3);
+    transform: translateY(-5px) scale(1.05);
+    border-color: #40BFFF;
 }
 .obra-gris-card .card-title {
-    color: #6c757d;
-    font-weight: 600;
+    color: #FFC107;
+    font-weight: 700;
 }
 .obra-gris-card .card-text {
-    color: #333;
+    color: #1A1A1A;
 }
 .obra-gris-card ul {
     font-size: 0.95em;
-    color: #555;
+    color: #666666;
 }
 .obra-gris-card img {
     border-radius: 12px 12px 0 0;
     object-fit: cover;
     height: 180px;
+    transition: filter 0.3s ease;
+}
+.obra-gris-card:hover img {
+    filter: brightness(1.1);
+}
+.obra-gris-card::before {
+    content: "\f55c"; /* Ícono de martillo (referencia a construcción) */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #FF4040;
+    font-size: 1.5em;
 }
 .alert-info {
-    background-color: #f3f3f3;
-    color: #6c757d;
-    border: 1px solid #d6d6d6;
+    background-color: #F5F5F5;
+    color: #FFC107;
+    border: 1px solid #40BFFF;
 }

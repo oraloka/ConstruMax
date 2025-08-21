@@ -1,62 +1,119 @@
 /* main.css - estilos para la vista principal */
 
-/* Banner animado con desplazamiento suave y efecto de fade */
+/* Banner animado con desplazamiento suave, efecto de fade y glow */
 .banner {
-    background: linear-gradient(90deg, #005baa 60%, #fff 100%);
-    color: #fff;
-    padding: 40px 0;
+    background: linear-gradient(90deg, #40BFFF 40%, #F5F5F5 80%);
+    color: #1A1A1A;
+    padding: 60px 0;
     text-align: center;
-    animation: fadeInSlide 1.5s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInSlide 1.5s ease-in-out, pulseGlow 4s infinite alternate;
+    box-shadow: inset 0 -5px 15px rgba(64, 191, 255, 0.3);
+}
+
+.banner::before {
+    content: "\f55a"; /* Ícono de montaña (referencia a South Park) */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #FFC107;
+    font-size: 2.5em;
+    text-shadow: 0 0 10px #FFC107, 0 0 20px #FF4040;
+    animation: bounce 2s infinite;
 }
 
 @keyframes fadeInSlide {
-    0% { opacity: 0; transform: translateY(20px); }
+    0% { opacity: 0; transform: translateY(30px); }
     100% { opacity: 1; transform: translateY(0); }
 }
 
-/* Tarjetas de categorías con hover animado */
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 10px #40BFFF; }
+    100% { box-shadow: 0 0 20px #40BFFF, 0 0 30px #FF4040; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Tarjetas de categorías con hover animado y efecto 3D */
 .category-card {
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    transition: box-shadow 0.3s ease, transform 0.3s ease, background 0.3s ease;
     border: none;
+    background: linear-gradient(135deg, #EDE4D3, #F5F5F5);
     animation: cardPop 0.8s ease-out backwards;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
 }
 
 .category-card:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(64, 191, 255, 0.3), 0 0 15px rgba(255, 64, 64, 0.2);
+    transform: translateY(-8px) scale(1.03);
+    background: linear-gradient(135deg, #F5F5F5, #EDE4D3);
+}
+
+.category-card .card-body {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
 }
 
 @keyframes cardPop {
-    0% { opacity: 0; transform: scale(0.9); }
-    100% { opacity: 1; transform: scale(1); }
+    0% { opacity: 0; transform: scale(0.85) rotate(-5deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0); }
 }
 
 /* Productos destacados con animación al cargar y hover */
 .card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+    background: linear-gradient(135deg, #EDE4D3, #F5F5F5);
     overflow: hidden;
+    border-radius: 15px;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(255, 193, 7, 0.25), 0 0 15px rgba(255, 64, 64, 0.15);
+    border: 2px solid #FFC107;
 }
 
 .card-img-top {
-    transition: transform 0.5s ease;
+    transition: transform 0.5s ease, filter 0.5s ease;
+    border-radius: 15px 15px 0 0;
 }
 
 .card:hover .card-img-top {
-    transform: scale(1.1);
+    transform: scale(1.15);
+    filter: brightness(1.2) contrast(1.1);
 }
 
-/* Footer con animación de fade-in */
+/* Footer con animación de fade-in y efecto de neón */
 .footer {
-    background: #f8f9fa;
-    padding: 20px 0;
+    background: linear-gradient(90deg, #F5F5F5, #EDE4D3);
+    padding: 30px 0;
     text-align: center;
-    color: #888;
+    color: #666666;
+    position: relative;
     animation: fadeIn 1s ease-in-out;
+    border-top: 2px solid #FF4040;
+}
+
+.footer::before {
+    content: "\f1fc"; /* Ícono de TV (referencia a la serie) */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    bottom: 15px;
+    right: 20px;
+    color: #FF4040;
+    font-size: 2em;
+    text-shadow: 0 0 10px #FF4040, 0 0 20px #40BFFF;
+    animation: rotate 3s infinite linear;
 }
 
 @keyframes fadeIn {
@@ -64,22 +121,13 @@
     100% { opacity: 1; }
 }
 
-/* Animación para botones */
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Animación para botones con efecto neón */
 .btn {
     transition: all 0.3s ease;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Ajustes responsivos y retrasos para animaciones secuenciales */
-.row > .col-md-3:nth-child(1) .category-card { animation-delay: 0.1s; }
-.row > .col-md-3:nth-child(2) .category-card { animation-delay: 0.2s; }
-.row > .col-md-3:nth-child(3) .category-card { animation-delay: 0.3s; }
-.row > .col-md-3:nth-child(4) .category-card { animation-delay: 0.4s; }
-
-.row > .col-md-4:nth-child(1) .card { animation-delay: 0.1s; }
-.row > .col-md-4:nth-child(2) .card { animation-delay: 0.2s; }
-.row > .col-md-4:nth-child(3) .card { animation-delay: 0.3s; }
+    background: linear-gradient(45deg, #FF4040, #E60000);
+    color: #

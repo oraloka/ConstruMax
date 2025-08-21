@@ -1,31 +1,49 @@
 /* Estilos para la vista de impermeabilizantes */
 .impermeabilizante-card {
     border-radius: 12px;
-    transition: box-shadow 0.2s;
-    border: 1px solid #e3e3e3;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    border: 1px solid #FF4040;
+    background: #EDE4D3;
+    overflow: hidden;
+    position: relative;
 }
 .impermeabilizante-card:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-    border-color: #198754;
+    box-shadow: 0 4px 16px rgba(255, 64, 64, 0.3);
+    transform: translateY(-5px) scale(1.05);
+    border-color: #40BFFF;
 }
 .impermeabilizante-card .card-title {
-    color: #198754;
-    font-weight: 600;
+    color: #FF4040;
+    font-weight: 700;
 }
 .impermeabilizante-card .card-text {
-    color: #333;
+    color: #1A1A1A;
 }
 .impermeabilizante-card ul {
     font-size: 0.95em;
-    color: #555;
+    color: #666666;
 }
 .impermeabilizante-card img {
     border-radius: 12px 12px 0 0;
     object-fit: cover;
     height: 180px;
+    transition: filter 0.3s ease;
+}
+.impermeabilizante-card:hover img {
+    filter: brightness(1.1);
+}
+.impermeabilizante-card::before {
+    content: "\f7e7"; /* Ícono de gota (referencia a impermeabilización) */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #40BFFF;
+    font-size: 1.5em;
 }
 .alert-info {
-    background-color: #eafff3;
-    color: #198754;
-    border: 1px solid #b6f7d6;
+    background-color: #F5F5F5;
+    color: #FF4040;
+    border: 1px solid #40BFFF;
 }

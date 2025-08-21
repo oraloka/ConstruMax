@@ -1,44 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Inicia sesión en la tienda virtual de materiales de construcción Corona">
     <title>Login</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
 </head>
 <body>
+    <main>
+        <div class="container mt-5">
+            <div class="col-md-6 offset-md-3 login-container">
+                <h2>Login</h2>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}             
+                        {% for category, message in messages %}
+                            {% if 'bloqueado' in message.lower() %}
+                                <div class="flash-message alert alert-warning" role="alert">{{ message }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
 
-<div class="container mt-5">
-    <div class="col-md-6 offset-md-3">
-        <h2>Login</h2>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}             
-                    {% for category, message in messages %}
-                        {% if 'bloqueado' in message.lower() %}
-                            <div class="flash-message alert alert-warning">{{ message }}</div>
-                        {% endif %}
-                    {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <form method="post" action="{{ url_for('auth.login') }}">
-            <div class="form-group">
-                <label for="nameUser">Username</label>
-                <input type="text" name="nameUser" id="nameUser" class="form-control" required>
+                <form method="post" action="{{ url_for('auth.login') }}">
+                    <div class="form-group">
+                        <label for="nameUser">Username</label>
+                        <input type="text" name="nameUser" id="nameUser" class="form-control" required aria-required="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="passwordUser">Password</label>
+                        <input type="password" name="passwordUser" id="passwordUser" class="form-control" required aria-required="true">
+                    </div>
+                    <button type="submit" class="btn btn-primary" aria-label="Iniciar sesión">Login</button>
+                    <a href="/" class="btn btn-secondary ml-2" aria-label="Volver a la vista principal">Volver</a>
+                </form>
+                <div class="mt-3 login-links">
+                    <a href="{{ url_for('register.register') }}">Don't have an account? Register</a>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="passwordUser">Password</label>
-                <input type="password" name="passwordUser" id="passwordUser" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-            <a href="/" class="btn btn-secondary ml-2">Volver a la vista principal</a>
-        </form>
-        <div class="mt-3">
-            <a href="{{ url_for('register.register') }}">Don't have an account? Register</a>
         </div>
-        
-    </div>
-</div>
-
+    </main>
 </body>
 </html>
