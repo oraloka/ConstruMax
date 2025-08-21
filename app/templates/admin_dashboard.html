@@ -8,6 +8,11 @@
 </head>
 <body>
 <div class="container mt-5">
+    {% if mensaje_desbloqueo %}
+    <div class="alert alert-warning" role="alert">
+        {{ mensaje_desbloqueo }}
+    </div>
+    {% endif %}
     <h2>Panel de Administración</h2>
     <p>Bienvenido, {{ current_user.nameUser }}! Rol: <strong>Admin</strong>.</p>
     <a href="{{ url_for('auth.logout') }}" class="btn btn-danger mb-4">Cerrar sesión</a>

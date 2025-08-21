@@ -97,13 +97,19 @@ def bloquear_usuario(id):
     usuario = Users.query.get_or_404(id)
     usuario.bloqueado = True
     db.session.commit()
-    flash('Usuario bloqueado.', 'warning')
-    return redirect(url_for('auth.dashboard'))
+    from app.models.productos import Producto
+    usuarios = Users.query.all()
+    productos = Producto.query.all()
+    mensaje_bloqueo = 'Usuario bloqueado.'
+    return render_template('admin_dashboard.html', usuarios=usuarios, productos=productos, mensaje_bloqueo=mensaje_bloqueo)
 
 @bp.route('/usuarios/desbloquear/<int:id>')
 def desbloquear_usuario(id):
     usuario = Users.query.get_or_404(id)
     usuario.bloqueado = False
     db.session.commit()
-    flash('Usuario desbloqueado.', 'success')
-    return redirect(url_for('auth.dashboard'))
+    from app.models.productos import Producto
+    usuarios = Users.query.all()
+    productos = Producto.query.all()
+    mensaje_desbloqueo = 'Usuario desbloqueado.'
+    return render_template('admin_dashboard.html', usuarios=usuarios, productos=productos, mensaje_desbloqueo=mensaje_desbloqueo)
