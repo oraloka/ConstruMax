@@ -19,82 +19,75 @@
 
     <!-- Gestión de productos -->
     <div class="card mb-5">
-        <div class="card-header bg-primary text-white">Gestión de productos</div>
+        <div class="card-header bg-success text-white">Agregar producto</div>
         <div class="card-body">
-            <form action="{{ url_for('productos.agregar_producto') }}" method="POST" enctype="multipart/form-data" class="mb-4">
-                <h5>Agregar producto</h5>
+            <form action="{{ url_for('productos.agregar_producto') }}" method="POST" enctype="multipart/form-data">
                 <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <label>Nombre</label>
-                        <input type="text" name="nombre" class="form-control" required>
+                    <div class="form-group col-md-6">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
                     </div>
-                    <div class="form-group col-md-3">
-                        <label>Categoría</label>
-                        <select name="categoria" class="form-control" required>
-                            <option value="pegantes">Pegantes</option>
+                    <div class="form-group col-md-6">
+                        <label for="categoria">Categoría</label>
+                        <select class="form-control" id="categoria" name="categoria" required>
+                            <option value="">Selecciona una categoría</option>
                             <option value="boquillas">Boquillas</option>
                             <option value="impermeabilizantes">Impermeabilizantes</option>
+                            <option value="pegantes">Pegantes</option>
                             <option value="obra gris">Obra gris</option>
+                            {% for cat in categorias %}
+                            <option value="{{ cat }}">{{ cat }}</option>
+                            {% endfor %}
                         </select>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label>Presentación</label>
-                        <input type="text" name="presentacion" class="form-control">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label>Marca</label>
-                        <input type="text" name="marca" class="form-control">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label>Descripción</label>
-                        <input type="text" name="descripcion" class="form-control" required>
+                        <label for="precio">Precio</label>
+                        <input type="number" step="0.01" class="form-control" id="precio" name="precio" required>
                     </div>
-                    <div class="form-group col-md-3">
-                        <label>Precio</label>
-                        <input type="number" name="precio" class="form-control" step="0.01" required>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label>Imagen</label>
-                        <input type="file" name="imagen" class="form-control-file">
+                    <div class="form-group col-md-6">
+                        <label for="presentacion">Presentación</label>
+                        <input type="text" class="form-control" id="presentacion" name="presentacion">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-success mt-2">Agregar producto</button>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="marca">Marca</label>
+                        <input type="text" class="form-control" id="marca" name="marca">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="descripcion">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="2" required></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="imagen">Imagen</label>
+                    <input type="file" class="form-control-file" id="imagen" name="imagen">
+                </div>
+                <button type="submit" class="btn btn-success">Agregar producto</button>
             </form>
+        </div>
+    </div>
 
-            <h5>Lista de productos</h5>
-            <table class="table table-bordered table-hover">
-                <thead class="thead-light">
-                    <tr>
-                        <th>Imagen</th>
-                        <th>Nombre</th>
-                        <th>Categoría</th>
-                        <th>Presentación</th>
-                        <th>Marca</th>
-                        <th>Descripción</th>
-                        <th>Precio</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for producto in productos %}
-                    <tr>
-                        <td><img src="{{ producto.imagen or 'https://via.placeholder.com/80x60?text=Imagen' }}" width="80" height="60"></td>
-                        <td>{{ producto.nombre }}</td>
-                        <td>{{ producto.categoria }}</td>
-                        <td>{{ producto.presentacion or 'N/A' }}</td>
-                        <td>{{ producto.marca or 'N/A' }}</td>
-                        <td>{{ producto.descripcion }}</td>
-                        <td>${{ producto.precio }}</td>
-                        <td>
-                            <a href="{{ url_for('productos.editar_producto', id=producto.id) }}" class="btn btn-warning btn-sm">Editar</a>
-                            <a href="{{ url_for('productos.eliminar_producto', id=producto.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este producto?');">Eliminar</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <!-- Gestión de productos destacados -->
+    <div class="card mb-5">
+        <div class="card-header bg-primary text-white">Productos destacados</div>
+        <div class="card-body">
+            <form action="{{ url_for('productos.destacados') }}" method="POST" class="mb-4">
+                <h5>Seleccionar productos destacados</h5>
+                <p class="text-muted">Selecciona los productos que aparecerán como destacados en la página principal.</p>
+                <div class="form-group">
+                    <label for="destacados">Productos disponibles:</label>
+                    <select multiple class="form-control" id="destacados" name="destacados">
+                        {% for producto in productos %}
+                        <option value="{{ producto.id }}" {% if producto.destacado %}selected{% endif %}>{{ producto.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="form-text text-muted">Mantén presionada Ctrl (Windows) o Cmd (Mac) para seleccionar varios.</small>
+                </div>
+                <button type="submit" class="btn btn-success mt-2">Guardar destacados</button>
+            </form>
         </div>
     </div>
 

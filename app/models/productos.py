@@ -9,6 +9,7 @@ class Producto(db.Model):
     imagen = db.Column(db.String(255))
     presentacion = db.Column(db.String(100))
     marca = db.Column(db.String(100))
+    destacado = db.Column(db.Boolean, default=False)
     # Puedes agregar más campos según lo que maneje la tienda
 
     def __repr__(self):

@@ -1,3 +1,4 @@
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app.models.productos import Producto
 from app.models.users import Users
@@ -6,6 +7,23 @@ import os
 from werkzeug.utils import secure_filename
 
 bp = Blueprint('productos', __name__)
+
+@bp.route('/productos/destacados', methods=['POST'])
+def destacados():
+    ids_destacados = request.form.getlist('destacados')
+    # Primero, desmarcar todos los productos
+    Producto.query.update({Producto.destacado: False})
+    db.session.commit()
+    # Marcar los seleccionados como destacados
+    for id_str in ids_destacados:
+        producto = Producto.query.get(int(id_str))
+        if producto:
+            producto.destacado = True
+    db.session.commit()
+    flash('Productos destacados actualizados.', 'success')
+    usuarios = Users.query.all()
+    productos = Producto.query.all()
+    return render_template('admin_dashboard.html', usuarios=usuarios, productos=productos)
 
 # Vista general de productos
 @bp.route('/productos')
@@ -41,7 +59,10 @@ def agregar_producto():
         db.session.commit()
         flash('Producto agregado correctamente.', 'success')
         return redirect(url_for('auth.dashboard'))
-    return render_template('productos/agregar.html')
+    # Obtener categorías únicas para el select
+    categorias = db.session.query(Producto.categoria).distinct().all()
+    categorias = [c[0] for c in categorias if c[0]]
+    return render_template('productos/agregar.html', categorias=categorias)
 
 @bp.route('/productos/editar/<int:id>', methods=['GET', 'POST'])
 def editar_producto(id):
@@ -71,6 +92,8 @@ def eliminar_producto(id):
     db.session.commit()
     flash('Producto eliminado correctamente.', 'success')
     return redirect(url_for('auth.dashboard'))
+
+
 
 @bp.route('/usuarios/editar/<int:id>', methods=['GET', 'POST'])
 def editar_usuario(id):
