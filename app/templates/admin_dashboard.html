@@ -8,9 +8,130 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h2>Admin Dashboard</h2>
-    <p>Welcome, {{ current_user.nameUser }}! You are logged in as <strong>Admin</strong>.</p>
-    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Logout</a>
+    <h2>Panel de Administración</h2>
+    <p>Bienvenido, {{ current_user.nameUser }}! Rol: <strong>Admin</strong>.</p>
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger mb-4">Cerrar sesión</a>
+
+    <!-- Gestión de productos -->
+    <div class="card mb-5">
+        <div class="card-header bg-primary text-white">Gestión de productos</div>
+        <div class="card-body">
+            <form action="{{ url_for('productos.agregar_producto') }}" method="POST" enctype="multipart/form-data" class="mb-4">
+                <h5>Agregar producto</h5>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label>Nombre</label>
+                        <input type="text" name="nombre" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Categoría</label>
+                        <select name="categoria" class="form-control" required>
+                            <option value="pegantes">Pegantes</option>
+                            <option value="boquillas">Boquillas</option>
+                            <option value="impermeabilizantes">Impermeabilizantes</option>
+                            <option value="obra gris">Obra gris</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Presentación</label>
+                        <input type="text" name="presentacion" class="form-control">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Marca</label>
+                        <input type="text" name="marca" class="form-control">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Descripción</label>
+                        <input type="text" name="descripcion" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Precio</label>
+                        <input type="number" name="precio" class="form-control" step="0.01" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Imagen</label>
+                        <input type="file" name="imagen" class="form-control-file">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success mt-2">Agregar producto</button>
+            </form>
+
+            <h5>Lista de productos</h5>
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Presentación</th>
+                        <th>Marca</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                    <tr>
+                        <td><img src="{{ producto.imagen or 'https://via.placeholder.com/80x60?text=Imagen' }}" width="80" height="60"></td>
+                        <td>{{ producto.nombre }}</td>
+                        <td>{{ producto.categoria }}</td>
+                        <td>{{ producto.presentacion or 'N/A' }}</td>
+                        <td>{{ producto.marca or 'N/A' }}</td>
+                        <td>{{ producto.descripcion }}</td>
+                        <td>${{ producto.precio }}</td>
+                        <td>
+                            <a href="{{ url_for('productos.editar_producto', id=producto.id) }}" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="{{ url_for('productos.eliminar_producto', id=producto.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este producto?');">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Gestión de usuarios -->
+    <div class="card mb-5">
+        <div class="card-header bg-secondary text-white">Gestión de usuarios</div>
+        <div class="card-body">
+            <h5>Lista de usuarios</h5>
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usuario in usuarios %}
+                    {% if usuario.role != 'admin' %}
+                    <tr>
+                        <td>{{ usuario.idUser }}</td>
+                        <td>{{ usuario.nameUser }}</td>
+                        <td>{{ usuario.role }}</td>
+                        <td>{{ 'Bloqueado' if usuario.bloqueado else 'Activo' }}</td>
+                        <td>
+                            <a href="{{ url_for('productos.editar_usuario', id=usuario.idUser) }}" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="{{ url_for('productos.eliminar_usuario', id=usuario.idUser) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este usuario?');">Eliminar</a>
+                            {% if usuario.bloqueado %}
+                                <a href="{{ url_for('productos.desbloquear_usuario', id=usuario.idUser) }}" class="btn btn-success btn-sm">Desbloquear</a>
+                            {% else %}
+                                <a href="{{ url_for('productos.bloquear_usuario', id=usuario.idUser) }}" class="btn btn-secondary btn-sm">Bloquear</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 </body>
 </html>

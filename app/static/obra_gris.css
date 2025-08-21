@@ -1,0 +1,31 @@
+/* Estilos para la vista de obra gris */
+.obra-gris-card {
+    border-radius: 12px;
+    transition: box-shadow 0.2s;
+    border: 1px solid #e3e3e3;
+}
+.obra-gris-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    border-color: #6c757d;
+}
+.obra-gris-card .card-title {
+    color: #6c757d;
+    font-weight: 600;
+}
+.obra-gris-card .card-text {
+    color: #333;
+}
+.obra-gris-card ul {
+    font-size: 0.95em;
+    color: #555;
+}
+.obra-gris-card img {
+    border-radius: 12px 12px 0 0;
+    object-fit: cover;
+    height: 180px;
+}
+.alert-info {
+    background-color: #f3f3f3;
+    color: #6c757d;
+    border: 1px solid #d6d6d6;
+}

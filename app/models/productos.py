@@ -7,6 +7,8 @@ class Producto(db.Model):
     categoria = db.Column(db.String(50), nullable=False)
     precio = db.Column(db.Float, nullable=False)
     imagen = db.Column(db.String(255))
+    presentacion = db.Column(db.String(100))
+    marca = db.Column(db.String(100))
     # Puedes agregar más campos según lo que maneje la tienda
 
     def __repr__(self):

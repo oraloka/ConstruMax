@@ -1,0 +1,31 @@
+/* Estilos para la vista de impermeabilizantes */
+.impermeabilizante-card {
+    border-radius: 12px;
+    transition: box-shadow 0.2s;
+    border: 1px solid #e3e3e3;
+}
+.impermeabilizante-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    border-color: #198754;
+}
+.impermeabilizante-card .card-title {
+    color: #198754;
+    font-weight: 600;
+}
+.impermeabilizante-card .card-text {
+    color: #333;
+}
+.impermeabilizante-card ul {
+    font-size: 0.95em;
+    color: #555;
+}
+.impermeabilizante-card img {
+    border-radius: 12px 12px 0 0;
+    object-fit: cover;
+    height: 180px;
+}
+.alert-info {
+    background-color: #eafff3;
+    color: #198754;
+    border: 1px solid #b6f7d6;
+}

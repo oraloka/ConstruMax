@@ -1,20 +1,39 @@
 {% extends 'main.html' %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='boquillas.css') }}">
+{% endblock %}
 {% block content %}
 <div class="container py-5">
-    <h2 class="mb-4">Boquillas</h2>
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h2 class="fw-bold">Boquillas</h2>
+            <p class="lead">Acabados perfectos para juntas y terminaciones. Descubre nuestras boquillas para lograr resultados profesionales en tus proyectos.</p>
+        </div>
+    </div>
     <div class="row g-4">
-        {% for producto in productos %}
-        <div class="col-md-4">
-            <div class="card h-100">
-                <img src="{{ producto.imagen or 'https://via.placeholder.com/350x200?text=Boquilla' }}" class="card-img-top" alt="{{ producto.nombre }}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ producto.nombre }}</h5>
-                    <p class="card-text">{{ producto.descripcion }}</p>
-                    <p class="mt-2 fw-bold">${{ producto.precio }}</p>
+        {% if productos %}
+            {% for producto in productos %}
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm boquilla-card">
+                    <img src="{{ producto.imagen or 'https://via.placeholder.com/350x200?text=Boquilla' }}" class="card-img-top" alt="{{ producto.nombre }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ producto.nombre }}</h5>
+                        <p class="card-text">{{ producto.descripcion }}</p>
+                        <ul class="list-unstyled mb-2">
+                            <li><strong>Categoría:</strong> {{ producto.categoria }}</li>
+                            <li><strong>Presentación:</strong> {{ producto.presentacion or 'N/A' }}</li>
+                            <li><strong>Marca:</strong> {{ producto.marca or 'N/A' }}</li>
+                        </ul>
+                        <p class="card-text"><strong>Precio:</strong> ${{ producto.precio }}</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">No hay productos de boquillas disponibles en este momento.</div>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

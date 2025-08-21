@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from app.models.users import Users
+from app.models.productos import Producto
 
 bp = Blueprint('auth', __name__)
 
@@ -27,7 +28,13 @@ def login():
 @login_required
 def dashboard():    
     if current_user.role == 'admin':
-        return render_template('admin_dashboard.html')
+        usuarios = Users.query.all()
+        productos = Producto.query.all()
+        return render_template('admin_dashboard.html', usuarios=usuarios, productos=productos)
+    elif current_user.bloqueado:
+        flash('Tu usuario está bloqueado. Contacta al administrador.', 'danger')
+        logout_user()
+        return redirect(url_for('auth.login'))
     else:
         return render_template('user_dashboard.html')
 
