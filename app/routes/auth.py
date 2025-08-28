@@ -36,7 +36,11 @@ def dashboard():
         logout_user()
         return redirect(url_for('auth.login'))
     else:
-        return render_template('user_dashboard.html')
+        # Obtener categorías únicas
+        categorias = Producto.query.with_entities(Producto.categoria).distinct().all()
+        categorias = [c[0] for c in categorias if c[0]]
+        productos = Producto.query.all()
+        return render_template('user_dashboard.html', categorias=categorias, productos=productos)
 
 @bp.route('/logout')
 @login_required

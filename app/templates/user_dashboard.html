@@ -8,9 +8,53 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h2>User Dashboard</h2>
-    <p>Welcome, {{ current_user.nameUser }}! You are logged in as <strong>User</strong>.</p>
-    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Logout</a>
+    <h2>Bienvenido, {{ current_user.nameUser }}!</h2>
+    <form method="GET" class="mb-4">
+        <div class="row">
+            <div class="col-md-6">
+                <input type="text" class="form-control" name="busqueda" placeholder="Buscar producto..." value="{{ request.args.get('busqueda', '') }}">
+            </div>
+            <div class="col-md-4">
+                <select class="form-control" name="categoria">
+                    <option value="">Todas las categorías</option>
+                    {% for cat in categorias %}
+                    <option value="{{ cat }}" {% if request.args.get('categoria') == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            </div>
+        </div>
+    </form>
+    <div class="row g-4">
+        {% set filtro = request.args.get('categoria') %}
+        {% set busqueda = request.args.get('busqueda', '').lower() %}
+        {% for producto in productos %}
+            {% if (not filtro or producto.categoria == filtro) and (not busqueda or busqueda in producto.nombre.lower() or busqueda in producto.descripcion.lower()) %}
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <img src="{{ producto.imagen or 'https://via.placeholder.com/350x200?text=Producto' }}" class="card-img-top" alt="{{ producto.nombre }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ producto.nombre }}</h5>
+                        <p class="card-text">{{ producto.descripcion }}</p>
+                        <ul class="list-unstyled mb-2">
+                            <li><strong>Categoría:</strong> {{ producto.categoria }}</li>
+                            <li><strong>Presentación:</strong> {{ producto.presentacion or 'N/A' }}</li>
+                            <li><strong>Marca:</strong> {{ producto.marca or 'N/A' }}</li>
+                        </ul>
+                        <p class="card-text"><strong>Precio:</strong> ${{ producto.precio }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">No hay productos disponibles.</div>
+            </div>
+        {% endfor %}
+    </div>
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger mt-4">Logout</a>
 </div>
 </body>
 </html>

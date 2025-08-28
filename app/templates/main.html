@@ -88,36 +88,22 @@
         <div class="container">
             <h2 class="mb-4">Productos destacados</h2>
             <div class="row g-4">
+                {% for producto in productos if producto.destacado %}
                 <div class="col-md-4">
                     <div class="card h-100">
-                        <img src="https://via.placeholder.com/350x200?text=Producto+1" class="card-img-top" alt="Producto 1">
+                        <img src="{{ producto.imagen or 'https://via.placeholder.com/350x200?text=Producto+Destacado' }}" class="card-img-top" alt="{{ producto.nombre }}">
                         <div class="card-body">
-                            <h5 class="card-title">Cemento Alta Resistencia</h5>
-                            <p class="card-text">Ideal para obras que requieren máxima durabilidad y fuerza.</p>
+                            <h5 class="card-title">{{ producto.nombre }}</h5>
+                            <p class="card-text">{{ producto.descripcion }}</p>
                             <a href="#" class="btn btn-primary">Ver más</a>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <img src="https://via.placeholder.com/350x200?text=Producto+2" class="card-img-top" alt="Producto 2">
-                        <div class="card-body">
-                            <h5 class="card-title">Impermeabilizante Premium</h5>
-                            <p class="card-text">Protección superior contra filtraciones y humedad.</p>
-                            <a href="#" class="btn btn-primary">Ver más</a>
-                        </div>
-                    </div>
+                {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center">No hay productos destacados seleccionados por el administrador.</div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <img src="https://via.placeholder.com/350x200?text=Producto+3" class="card-img-top" alt="Producto 3">
-                        <div class="card-body">
-                            <h5 class="card-title">Ladrillo Rojo Clásico</h5>
-                            <p class="card-text">Ladrillo de alta calidad fabricado en arcilla cocida, resistente y duradero, ideal para la construcción de muros, fachadas y estructuras sólidas.</p>
-                            <a href="#" class="btn btn-primary">Ver más</a>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>

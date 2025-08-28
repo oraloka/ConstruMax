@@ -30,6 +30,8 @@ def create_app():
     # Ruta principal para la vista principal
     @app.route('/')
     def main():
-        return render_template('main.html')
+        from .models.productos import Producto
+        productos = Producto.query.filter_by(destacado=True).all()
+        return render_template('main.html', productos=productos)
 
     return app
