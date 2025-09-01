@@ -24,6 +24,13 @@
                         <span class="badge bg-warning">En camino</span>
                     {% elif order.status == 'entregado' %}
                         <span class="badge bg-success">Entregado</span>
+                    {% elif order.status == 'pendiente' %}
+                        <span class="badge bg-secondary">En espera</span>
+                        {% if current_user.role == 'admin' %}
+                        <form action="{{ url_for('orders.accept_order', order_id=order.id) }}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-primary ms-2">Aceptar pedido</button>
+                        </form>
+                        {% endif %}
                     {% else %}
                         <span class="badge bg-secondary">{{ order.status }}</span>
                     {% endif %}

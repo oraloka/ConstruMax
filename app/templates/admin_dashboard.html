@@ -24,6 +24,7 @@
                 <li class="nav-item"><a class="nav-link" href="#destacados" onclick="showSection('destacados')">Destacados</a></li>
                 <li class="nav-item"><a class="nav-link" href="#usuarios" onclick="showSection('usuarios')">Usuarios</a></li>
                 <li class="nav-item"><a class="nav-link" href="#agregar" onclick="showSection('agregar')">Agregar producto</a></li>
+                <li class="nav-item"><a class="nav-link" href="#pedidos" onclick="showSection('pedidos')">Pedidos</a></li>
                 <li class="nav-item"><a class="nav-link text-danger" href="{{ url_for('auth.logout') }}">Cerrar sesión</a></li>
             </ul>
         </nav>
@@ -179,6 +180,62 @@
                             </div>
                             <button type="submit" class="btn btn-success">Agregar producto</button>
                         </form>
+                    </div>
+                </div>
+            </div>
+            <div id="pedidos" class="section" style="display:none;">
+                <div class="card mb-5">
+                    <div class="card-header bg-success text-white">Pedidos pendientes</div>
+                    <div class="card-body">
+                        <h5>Lista de pedidos</h5>
+                        <table class="table table-bordered table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>ID Pedido</th>
+                                    <th>Usuario</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                    <th>Productos</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pedido in pedidos %}
+                                <tr>
+                                    <td>{{ pedido.id }}</td>
+                                    <td>{{ pedido.user_id }}</td>
+                                    <td>{{ pedido.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                    <td>
+                                        {% if pedido.status == 'aceptado' %}
+                                            <span class="badge bg-info">Aceptado</span>
+                                        {% elif pedido.status == 'en_camino' %}
+                                            <span class="badge bg-warning">En camino</span>
+                                        {% elif pedido.status == 'entregado' %}
+                                            <span class="badge bg-success">Entregado</span>
+                                        {% elif pedido.status == 'pendiente' %}
+                                            <span class="badge bg-secondary">En espera</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ pedido.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <ul>
+                                        {% for item in pedido.items %}
+                                            <li>{{ item.product_name }} (x{{ item.quantity }})</li>
+                                        {% endfor %}
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        {% if pedido.status == 'pendiente' %}
+                                        <form action="{{ url_for('orders.accept_order', order_id=pedido.id) }}" method="post" style="display:inline;">
+                                            <button type="submit" class="btn btn-sm btn-primary">Aceptar</button>
+                                        </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

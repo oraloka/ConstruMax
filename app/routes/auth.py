@@ -30,7 +30,9 @@ def dashboard():
     if current_user.role == 'admin':
         usuarios = Users.query.all()
         productos = Producto.query.all()
-        return render_template('admin_dashboard.html', usuarios=usuarios, productos=productos)
+        from app.models.users import Order
+        pedidos = Order.query.order_by(Order.created_at.desc()).all()
+        return render_template('admin_dashboard.html', usuarios=usuarios, productos=productos, pedidos=pedidos)
     elif current_user.bloqueado:
         flash('Tu usuario está bloqueado. Contacta al administrador.', 'danger')
         logout_user()

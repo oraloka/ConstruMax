@@ -12,7 +12,7 @@ def create_order():
     if not cart or not cart.items:
         flash('El carrito está vacío.', 'danger')
         return redirect(url_for('cart.view_cart'))
-    order = Order(user_id=current_user.idUser, status='aceptado')
+    order = Order(user_id=current_user.idUser, status='pendiente')
     db.session.add(order)
     db.session.commit()
     for item in cart.items:
@@ -28,3 +28,19 @@ def create_order():
 def view_orders():
     orders = Order.query.filter_by(user_id=current_user.idUser).order_by(Order.created_at.desc()).all()
     return render_template('orders.html', orders=orders)
+
+@bp.route('/accept/<int:order_id>', methods=['POST'])
+@login_required
+def accept_order(order_id):
+    from app.models.users import Users
+    if current_user.role != 'admin':
+        flash('Solo el administrador puede aceptar pedidos.', 'danger')
+        return redirect(url_for('orders.view_orders'))
+    order = Order.query.get(order_id)
+    if order and order.status == 'pendiente':
+        order.status = 'aceptado'
+        db.session.commit()
+        flash('Pedido aceptado correctamente.', 'success')
+    else:
+        flash('Pedido no encontrado o ya aceptado.', 'danger')
+    return redirect(url_for('orders.view_orders'))

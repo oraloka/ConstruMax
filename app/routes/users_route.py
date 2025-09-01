@@ -22,7 +22,11 @@ def destacados():
     flash('Productos destacados actualizados.', 'success')
     usuarios = Users.query.all()
     productos = Producto.query.all()
-    return render_template('admin_dashboard.html', usuarios=usuarios, productos=productos)
+    from app.models.users import Order
+    pedidos = Order.query.order_by(Order.created_at.desc()).all()
+    if pedidos is None:
+        pedidos = []
+    return render_template('admin_dashboard.html', usuarios=usuarios, productos=productos, pedidos=pedidos)
 
 # Vista general de productos
 @bp.route('/productos')
