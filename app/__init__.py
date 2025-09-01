@@ -23,9 +23,13 @@ def create_app():
     from app.routes import auth
     from app.routes import register
     from app.routes import users_route
+    from app.routes import cart
+    from app.routes import orders
     app.register_blueprint(auth.bp)
     app.register_blueprint(register.bp)
     app.register_blueprint(users_route.bp)
+    app.register_blueprint(cart.bp)
+    app.register_blueprint(orders.bp)
 
     # Ruta principal para la vista principal
     @app.route('/')

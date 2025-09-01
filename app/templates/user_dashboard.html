@@ -9,6 +9,11 @@
 <body>
 <div class="container mt-5">
     <h2>Bienvenido, {{ current_user.nameUser }}!</h2>
+    <div class="mb-3 text-end">
+        <a href="{{ url_for('cart.view_cart') }}" class="btn btn-success">
+            <i class="fas fa-shopping-cart"></i> Ver carrito
+        </a>
+    </div>
     <form method="GET" class="mb-4">
         <div class="row">
             <div class="col-md-6">
@@ -44,6 +49,9 @@
                             <li><strong>Marca:</strong> {{ producto.marca or 'N/A' }}</li>
                         </ul>
                         <p class="card-text"><strong>Precio:</strong> ${{ producto.precio }}</p>
+                        <form action="{{ url_for('cart.add_to_cart', product_id=producto.id) }}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-success mt-2 rounded-pill"><i class="fas fa-cart-plus"></i> Agregar al carrito</button>
+                        </form>
                     </div>
                 </div>
             </div>

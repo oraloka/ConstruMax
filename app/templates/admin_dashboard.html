@@ -13,158 +13,183 @@
         {{ mensaje_desbloqueo }}
     </div>
     {% endif %}
-    <h2>Panel de Administración</h2>
-    <p>Bienvenido, {{ current_user.nameUser }}! Rol: <strong>Admin</strong>.</p>
-    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger mb-4">Cerrar sesión</a>
-
-    <!-- Gestión de productos -->
-    <div class="card mb-5">
-        <div class="card-header bg-success text-white">Agregar producto</div>
-        <div class="card-body">
-            <form action="{{ url_for('productos.agregar_producto') }}" method="POST" enctype="multipart/form-data">
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="nombre">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" required>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="categoria">Categoría</label>
-                        <select class="form-control" id="categoria" name="categoria" required>
-                            <option value="">Selecciona una categoría</option>
-                            <option value="boquillas">Boquillas</option>
-                            <option value="impermeabilizantes">Impermeabilizantes</option>
-                            <option value="pegantes">Pegantes</option>
-                            <option value="obra gris">Obra gris</option>
-                            {% for cat in categorias %}
-                            <option value="{{ cat }}">{{ cat }}</option>
-                            {% endfor %}
-                        </select>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <nav class="bg-light border-end" id="sidebar" style="width: 250px; min-height: 100vh;">
+            <div class="sidebar-header p-4">
+                <h4>Panel Admin</h4>
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link" href="#productos" onclick="showSection('productos')">Productos</a></li>
+                <li class="nav-item"><a class="nav-link" href="#destacados" onclick="showSection('destacados')">Destacados</a></li>
+                <li class="nav-item"><a class="nav-link" href="#usuarios" onclick="showSection('usuarios')">Usuarios</a></li>
+                <li class="nav-item"><a class="nav-link" href="#agregar" onclick="showSection('agregar')">Agregar producto</a></li>
+                <li class="nav-item"><a class="nav-link text-danger" href="{{ url_for('auth.logout') }}">Cerrar sesión</a></li>
+            </ul>
+        </nav>
+        <!-- Main content -->
+        <div class="flex-grow-1 p-4">
+            <div id="productos" class="section">
+                <!-- Gestión de edición de productos -->
+                <div class="card mb-5">
+                    <div class="card-header bg-info text-white">Editar productos disponibles</div>
+                    <div class="card-body">
+                        <h5>Lista de productos</h5>
+                        <table class="table table-bordered table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Categoría</th>
+                                    <th>Precio</th>
+                                    <th>Marca</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for producto in productos %}
+                                <tr>
+                                    <td>{{ producto.id }}</td>
+                                    <td>{{ producto.nombre }}</td>
+                                    <td>{{ producto.categoria }}</td>
+                                    <td>${{ producto.precio }}</td>
+                                    <td>{{ producto.marca or 'N/A' }}</td>
+                                    <td>
+                                        <a href="{{ url_for('productos.editar_producto', id=producto.id) }}" class="btn btn-warning btn-sm">Editar</a>
+                                        <a href="{{ url_for('productos.eliminar_producto', id=producto.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este producto?');">Eliminar</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="precio">Precio</label>
-                        <input type="number" step="0.01" class="form-control" id="precio" name="precio" required>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="presentacion">Presentación</label>
-                        <input type="text" class="form-control" id="presentacion" name="presentacion">
+            </div>
+            <div id="destacados" class="section" style="display:none;">
+                <!-- Gestión de productos destacados -->
+                <div class="card mb-5">
+                    <div class="card-header bg-primary text-white">Productos destacados</div>
+                    <div class="card-body">
+                        <form action="{{ url_for('productos.destacados') }}" method="POST" class="mb-4">
+                            <h5>Seleccionar productos destacados</h5>
+                            <p class="text-muted">Selecciona los productos que aparecerán como destacados en la página principal.</p>
+                            <div class="form-group">
+                                <label for="destacados">Productos disponibles:</label>
+                                <select multiple class="form-control" id="destacados" name="destacados">
+                                    {% for producto in productos %}
+                                    <option value="{{ producto.id }}" {% if producto.destacado %}selected{% endif %}>{{ producto.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                                <small class="form-text text-muted">Mantén presionada Ctrl (Windows) o Cmd (Mac) para seleccionar varios.</small>
+                            </div>
+                            <button type="submit" class="btn btn-success mt-2">Guardar destacados</button>
+                        </form>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="marca">Marca</label>
-                        <input type="text" class="form-control" id="marca" name="marca">
+            </div>
+            <div id="usuarios" class="section" style="display:none;">
+                <!-- Gestión de usuarios -->
+                <div class="card mb-5">
+                    <div class="card-header bg-secondary text-white">Gestión de usuarios</div>
+                    <div class="card-body">
+                        <h5>Lista de usuarios</h5>
+                        <table class="table table-bordered table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for usuario in usuarios %}
+                                {% if usuario.role != 'admin' %}
+                                <tr>
+                                    <td>{{ usuario.idUser }}</td>
+                                    <td>{{ usuario.nameUser }}</td>
+                                    <td>{{ usuario.role }}</td>
+                                    <td>{{ 'Bloqueado' if usuario.bloqueado else 'Activo' }}</td>
+                                    <td>
+                                        <a href="{{ url_for('productos.editar_usuario', id=usuario.idUser) }}" class="btn btn-warning btn-sm">Editar</a>
+                                        <a href="{{ url_for('productos.eliminar_usuario', id=usuario.idUser) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este usuario?');">Eliminar</a>
+                                        {% if usuario.bloqueado %}
+                                            <a href="{{ url_for('productos.desbloquear_usuario', id=usuario.idUser) }}" class="btn btn-success btn-sm">Desbloquear</a>
+                                        {% else %}
+                                            <a href="{{ url_for('productos.bloquear_usuario', id=usuario.idUser) }}" class="btn btn-secondary btn-sm">Bloquear</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="form-group col-md-6">
-                        <label for="descripcion">Descripción</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" rows="2" required></textarea>
+                </div>
+            </div>
+            <div id="agregar" class="section" style="display:none;">
+                <!-- Gestión de productos -->
+                <div class="card mb-5">
+                    <div class="card-header bg-success text-white">Agregar producto</div>
+                    <div class="card-body">
+                        <form action="{{ url_for('productos.agregar_producto') }}" method="POST" enctype="multipart/form-data">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="nombre">Nombre</label>
+                                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="categoria">Categoría</label>
+                                    <select class="form-control" id="categoria" name="categoria" required>
+                                        <option value="">Selecciona una categoría</option>
+                                        <option value="boquillas">Boquillas</option>
+                                        <option value="impermeabilizantes">Impermeabilizantes</option>
+                                        <option value="pegantes">Pegantes</option>
+                                        <option value="obra gris">Obra gris</option>
+                                        {% for cat in categorias %}
+                                        <option value="{{ cat }}">{{ cat }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="precio">Precio</label>
+                                    <input type="number" step="0.01" class="form-control" id="precio" name="precio" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="presentacion">Presentación</label>
+                                    <input type="text" class="form-control" id="presentacion" name="presentacion">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="marca">Marca</label>
+                                    <input type="text" class="form-control" id="marca" name="marca">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="descripcion">Descripción</label>
+                                    <textarea class="form-control" id="descripcion" name="descripcion" rows="2" required></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="imagen">Imagen</label>
+                                <input type="file" class="form-control-file" id="imagen" name="imagen">
+                            </div>
+                            <button type="submit" class="btn btn-success">Agregar producto</button>
+                        </form>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="imagen">Imagen</label>
-                    <input type="file" class="form-control-file" id="imagen" name="imagen">
-                </div>
-                <button type="submit" class="btn btn-success">Agregar producto</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Gestión de productos destacados -->
-    <div class="card mb-5">
-        <div class="card-header bg-primary text-white">Productos destacados</div>
-        <div class="card-body">
-            <form action="{{ url_for('productos.destacados') }}" method="POST" class="mb-4">
-                <h5>Seleccionar productos destacados</h5>
-                <p class="text-muted">Selecciona los productos que aparecerán como destacados en la página principal.</p>
-                <div class="form-group">
-                    <label for="destacados">Productos disponibles:</label>
-                    <select multiple class="form-control" id="destacados" name="destacados">
-                        {% for producto in productos %}
-                        <option value="{{ producto.id }}" {% if producto.destacado %}selected{% endif %}>{{ producto.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                    <small class="form-text text-muted">Mantén presionada Ctrl (Windows) o Cmd (Mac) para seleccionar varios.</small>
-                </div>
-                <button type="submit" class="btn btn-success mt-2">Guardar destacados</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Gestión de usuarios -->
-    <div class="card mb-5">
-        <div class="card-header bg-secondary text-white">Gestión de usuarios</div>
-        <div class="card-body">
-            <h5>Lista de usuarios</h5>
-            <table class="table table-bordered table-hover">
-                <thead class="thead-light">
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Rol</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for usuario in usuarios %}
-                    {% if usuario.role != 'admin' %}
-                    <tr>
-                        <td>{{ usuario.idUser }}</td>
-                        <td>{{ usuario.nameUser }}</td>
-                        <td>{{ usuario.role }}</td>
-                        <td>{{ 'Bloqueado' if usuario.bloqueado else 'Activo' }}</td>
-                        <td>
-                            <a href="{{ url_for('productos.editar_usuario', id=usuario.idUser) }}" class="btn btn-warning btn-sm">Editar</a>
-                            <a href="{{ url_for('productos.eliminar_usuario', id=usuario.idUser) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este usuario?');">Eliminar</a>
-                            {% if usuario.bloqueado %}
-                                <a href="{{ url_for('productos.desbloquear_usuario', id=usuario.idUser) }}" class="btn btn-success btn-sm">Desbloquear</a>
-                            {% else %}
-                                <a href="{{ url_for('productos.bloquear_usuario', id=usuario.idUser) }}" class="btn btn-secondary btn-sm">Bloquear</a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Gestión de edición de productos -->
-    <div class="card mb-5">
-        <div class="card-header bg-info text-white">Editar productos disponibles</div>
-        <div class="card-body">
-            <h5>Lista de productos</h5>
-            <table class="table table-bordered table-hover">
-                <thead class="thead-light">
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Categoría</th>
-                        <th>Precio</th>
-                        <th>Marca</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for producto in productos %}
-                    <tr>
-                        <td>{{ producto.id }}</td>
-                        <td>{{ producto.nombre }}</td>
-                        <td>{{ producto.categoria }}</td>
-                        <td>${{ producto.precio }}</td>
-                        <td>{{ producto.marca or 'N/A' }}</td>
-                        <td>
-                            <a href="{{ url_for('productos.editar_producto', id=producto.id) }}" class="btn btn-warning btn-sm">Editar</a>
-                            <a href="{{ url_for('productos.eliminar_producto', id=producto.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este producto?');">Eliminar</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            </div>
         </div>
     </div>
 </div>
+<script>
+function showSection(section) {
+    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+    document.getElementById(section).style.display = 'block';
+}
+</script>
 </body>
 </html>

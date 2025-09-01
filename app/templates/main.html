@@ -3,79 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Materiales de Construcción</title>
+    <meta name="description" content="Tienda virtual de materiales de construcción ConstruMax - Calidad y durabilidad garantizadas">
+    <meta name="keywords" content="materiales de construcción, construMax, pegantes, impermeabilizantes, obra gris">
+    <title>Materiales de Construcción - ConstruMax</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 </head>
 <body>
-
     {% block content %}
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="#">ConstruMax</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Categorías</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
-                </ul>
-                <a href="{{ url_for('auth.login') }}" class="btn btn-primary ms-3">Iniciar sesión</a>
+    <section class="menu menu2 position-absolute w-100" style="z-index:1000;">
+        <nav class="navbar navbar-dropdown navbar-expand-lg navbar-dark bg-primary shadow-lg">
+            <div class="container">
+                <div class="navbar-brand d-flex align-items-center">
+                    <span class="navbar-logo me-2">
+                        <a href="#">
+                            <img src="https://r.mobirisesite.com/1777140/assets/images/photo-1722223223122-51aa1188be4c.png" alt="ConstruMax" style="height:3rem;">
+                        </a>
+                    </span>
+                    <span class="navbar-caption-wrap">
+                        <a class="navbar-caption text-white fw-bold" href="#">ConstruMax</a>
+                    </span>
+                </div>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <div class="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav nav-dropdown ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link link text-white" href="#">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link link text-white" href="#categorias">Productos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link link text-white" href="#contacto">Contacto</a>
+                        </li>
+                    </ul>
+                    <div class="icons-menu ms-3">
+                        <a class="iconfont-wrapper text-white" href="tel:+573001234567" title="Llámanos">
+                            <i class="fas fa-phone"></i>
+                        </a>
+                        <a class="iconfont-wrapper text-white ms-2" href="mailto:info@construMax.com" title="Email">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                        <a class="iconfont-wrapper text-white ms-2" href="#ubicacion" title="Ubicación">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </a>
+                        <a class="iconfont-wrapper text-white ms-2" href="#carrito" title="Carrito">
+                            <i class="fas fa-shopping-cart"></i>
+                        </a>
+                    </div>
+                    <div class="navbar-buttons mbr-section-btn ms-3">
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-light fw-bold text-primary shadow-sm">Iniciar sesión</a>
+                        <a href="#cotizar" class="btn btn-primary ms-2 fw-bold shadow-sm">Cotizar</a>
+                    </div>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </section>
 
     <!-- Banner -->
-    <section class="banner">
-        <div class="container">
-            <h1 class="display-5 fw-bold">Materiales de Construcción</h1>
-            <p class="lead">Encuentra los materiales para la construcción de tu proyecto o remodelación de tus espacios. Productos de alta calidad e innovadores con mayor resistencia, durabilidad y protección.</p>
-            <a href="#categorias" class="btn btn-warning btn-lg">Ver categorías</a>
+    <section class="banner py-5 bg-gradient text-white position-relative overflow-hidden">
+        <div class="container text-center">
+            <h1 class="display-3 fw-bold mb-3 text-shadow">Materiales de Construcción</h1>
+            <p class="lead mb-4 fs-5">Encuentra los materiales para la construcción de tu proyecto o remodelación de tus espacios. Productos de alta calidad e innovadores con mayor resistencia, durabilidad y protección.</p>
+            <a href="#categorias" class="btn btn-warning btn-lg shadow-lg rounded-pill">Ver categorías</a>
         </div>
+        <div class="position-absolute top-50 start-0 translate-middle-y bg-primary opacity-25" style="width: 100px; height: 100px; border-radius: 50%; z-index: -1;"></div>
     </section>
 
     <!-- Categorías -->
-    <section id="categorias" class="py-5">
+    <section id="categorias" class="py-5 bg-light">
         <div class="container">
-            <h2 class="mb-4">Categorías principales</h2>
-            <div class="row g-4">
+            <h2 class="mb-4 text-primary fw-bold text-center border-bottom border-primary pb-2">Categorías principales</h2>
+            <div class="row g-4 justify-content-center">
                 <div class="col-md-3">
-                    <div class="card category-card h-100">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Pegantes</h5>
-                            <p class="card-text">Soluciones para unir y fijar materiales con máxima resistencia.</p>
-                            <a href="{{ url_for('productos.productos_categoria', categoria='pegantes') }}" class="btn btn-outline-primary">Ver productos</a>
+                    <div class="card category-card h-100 border-0 shadow-lg">
+                        <div class="card-body text-center p-4">
+                            <img src="https://via.placeholder.com/80x80?text=Pegantes" class="mb-3 img-fluid rounded-circle" alt="Pegantes">
+                            <h5 class="card-title fw-bold text-primary">Pegantes</h5>
+                            <p class="card-text text-muted">Soluciones para unir y fijar materiales con máxima resistencia.</p>
+                            <a href="{{ url_for('productos.productos_categoria', categoria='pegantes') }}" class="btn btn-outline-primary mt-3 rounded-pill">Ver productos</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card category-card h-100">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Boquillas</h5>
-                            <p class="card-text">Acabados perfectos para juntas y terminaciones.</p>
-                            <a href="{{ url_for('productos.productos_categoria', categoria='boquillas') }}" class="btn btn-outline-primary">Ver productos</a>
+                    <div class="card category-card h-100 border-0 shadow-lg">
+                        <div class="card-body text-center p-4">
+                            <img src="https://via.placeholder.com/80x80?text=Boquillas" class="mb-3 img-fluid rounded-circle" alt="Boquillas">
+                            <h5 class="card-title fw-bold text-primary">Boquillas</h5>
+                            <p class="card-text text-muted">Acabados perfectos para juntas y terminaciones.</p>
+                            <a href="{{ url_for('productos.productos_categoria', categoria='boquillas') }}" class="btn btn-outline-primary mt-3 rounded-pill">Ver productos</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card category-card h-100">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Impermeabilizantes</h5>
-                            <p class="card-text">Protege tus espacios contra la humedad y filtraciones.</p>
-                            <a href="{{ url_for('productos.productos_categoria', categoria='impermeabilizantes') }}" class="btn btn-outline-primary">Ver productos</a>
+                    <div class="card category-card h-100 border-0 shadow-lg">
+                        <div class="card-body text-center p-4">
+                            <img src="https://via.placeholder.com/80x80?text=Impermeabilizantes" class="mb-3 img-fluid rounded-circle" alt="Impermeabilizantes">
+                            <h5 class="card-title fw-bold text-primary">Impermeabilizantes</h5>
+                            <p class="card-text text-muted">Protege tus espacios contra la humedad y filtraciones.</p>
+                            <a href="{{ url_for('productos.productos_categoria', categoria='impermeabilizantes') }}" class="btn btn-outline-primary mt-3 rounded-pill">Ver productos</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card category-card h-100">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Obra gris</h5>
-                            <p class="card-text">Materiales esenciales para la estructura y base de tu proyecto.</p>
-                            <a href="{{ url_for('productos.productos_categoria', categoria='obra gris') }}" class="btn btn-outline-primary">Ver productos</a>
+                    <div class="card category-card h-100 border-0 shadow-lg">
+                        <div class="card-body text-center p-4">
+                            <img src="https://via.placeholder.com/80x80?text=Obra+Gris" class="mb-3 img-fluid rounded-circle" alt="Obra gris">
+                            <h5 class="card-title fw-bold text-primary">Obra gris</h5>
+                            <p class="card-text text-muted">Materiales esenciales para la estructura y base de tu proyecto.</p>
+                            <a href="{{ url_for('productos.productos_categoria', categoria='obra gris') }}" class="btn btn-outline-primary mt-3 rounded-pill">Ver productos</a>
                         </div>
                     </div>
                 </div>
@@ -84,24 +129,28 @@
     </section>
 
     <!-- Productos destacados -->
-    <section class="py-5 bg-light">
+    <section class="py-5">
         <div class="container">
-            <h2 class="mb-4">Productos destacados</h2>
-            <div class="row g-4">
+            <h2 class="mb-4 text-primary fw-bold text-center border-bottom border-primary pb-2">Productos destacados</h2>
+            <div class="row g-4 justify-content-center">
                 {% for producto in productos if producto.destacado %}
                 <div class="col-md-4">
-                    <div class="card h-100">
-                        <img src="{{ producto.imagen or 'https://via.placeholder.com/350x200?text=Producto+Destacado' }}" class="card-img-top" alt="{{ producto.nombre }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ producto.nombre }}</h5>
-                            <p class="card-text">{{ producto.descripcion }}</p>
-                            <a href="#" class="btn btn-primary">Ver más</a>
+                    <div class="card h-100 border-0 shadow-lg">
+                        <img src="{{ producto.imagen or 'https://via.placeholder.com/350x200?text=Producto+Destacado' }}" class="card-img-top img-fluid" alt="{{ producto.nombre }}">
+                        <div class="card-body p-4">
+                            <h5 class="card-title fw-bold text-primary">{{ producto.nombre }}</h5>
+                            <p class="card-text text-muted">{{ producto.descripcion }}</p>
+                            <span class="badge bg-warning text-dark mb-2">Destacado</span>
+                            <form action="{{ url_for('cart.add_to_cart', product_id=producto.id) }}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-success mt-2 rounded-pill"><i class="fas fa-cart-plus"></i> Agregar al carrito</button>
+                            </form>
+                            <a href="#" class="btn btn-primary mt-3 rounded-pill">Ver más</a>
                         </div>
                     </div>
                 </div>
                 {% else %}
                 <div class="col-12">
-                    <div class="alert alert-info text-center">No hay productos destacados seleccionados por el administrador.</div>
+                    <div class="alert alert-info text-center shadow-sm">No hay productos destacados seleccionados por el administrador.</div>
                 </div>
                 {% endfor %}
             </div>
@@ -109,13 +158,13 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer mt-5">
-        <div class="container">
-            <p>&copy; 2025 Corona - Todos los derechos reservados</p>
-            <div>
-                <a href="#" class="me-2">Facebook</a>
-                <a href="#" class="me-2">Instagram</a>
-                <a href="#">YouTube</a>
+    <footer class="footer bg-primary text-white py-4">
+        <div class="container text-center">
+            <p class="mb-2 fw-bold">&copy; 2025 ConstruMax - Todos los derechos reservados</p>
+            <div class="d-flex justify-content-center">
+                <a href="#" class="me-3 text-white text-decoration-none"><i class="fab fa-facebook-f"></i> Facebook</a>
+                <a href="#" class="me-3 text-white text-decoration-none"><i class="fab fa-instagram"></i> Instagram</a>
+                <a href="#" class="text-white text-decoration-none"><i class="fab fa-youtube"></i> YouTube</a>
             </div>
         </div>
     </footer>
@@ -126,7 +175,7 @@
       {% if messages %}
         {% for category, message in messages %}
           {% if 'registro' in message.lower() or 'registration' in message.lower() %}
-            <div class="alert alert-success">{{ message }}</div>
+            <div class="alert alert-success position-fixed bottom-0 start-50 translate-middle-x mb-4 shadow-sm" style="z-index: 1000;">{{ message }}</div>
           {% endif %}
         {% endfor %}
       {% endif %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Mis Pedidos</h2>
+    {% if orders %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID Pedido</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Productos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>
+                    {% if order.status == 'aceptado' %}
+                        <span class="badge bg-info">Aceptado</span>
+                    {% elif order.status == 'en_camino' %}
+                        <span class="badge bg-warning">En camino</span>
+                    {% elif order.status == 'entregado' %}
+                        <span class="badge bg-success">Entregado</span>
+                    {% else %}
+                        <span class="badge bg-secondary">{{ order.status }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <ul>
+                    {% for item in order.items %}
+                        <li>{{ item.product_name }} (x{{ item.quantity }})</li>
+                    {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No tienes pedidos realizados.</p>
+    {% endif %}
+</div>
+{% endblock %}

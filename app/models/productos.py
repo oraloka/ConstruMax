@@ -10,6 +10,7 @@ class Producto(db.Model):
     presentacion = db.Column(db.String(100))
     marca = db.Column(db.String(100))
     destacado = db.Column(db.Boolean, default=False)
+    stock = db.Column(db.Integer, nullable=False, default=0)  # Nuevo campo para el stock
     # Puedes agregar más campos según lo que maneje la tienda
 
     def __repr__(self):
