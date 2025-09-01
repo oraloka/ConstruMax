@@ -49,7 +49,9 @@
                             <li><strong>Marca:</strong> {{ producto.marca or 'N/A' }}</li>
                         </ul>
                         <p class="card-text"><strong>Precio:</strong> ${{ producto.precio }}</p>
+                        <p class="card-text"><strong>Stock disponible:</strong> {{ producto.stock }}</p>
                         <form action="{{ url_for('cart.add_to_cart', product_id=producto.id) }}" method="post" style="display:inline;">
+                            <input type="number" name="quantity" value="1" min="1" max="{{ producto.stock }}" class="form-control form-control-sm d-inline-block" style="width:80px;">
                             <button type="submit" class="btn btn-success mt-2 rounded-pill"><i class="fas fa-cart-plus"></i> Agregar al carrito</button>
                         </form>
                     </div>

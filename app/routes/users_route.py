@@ -1,4 +1,3 @@
-
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app.models.productos import Producto
 from app.models.users import Users
@@ -54,7 +53,8 @@ def agregar_producto():
             ruta = os.path.join('app/static/img', filename)
             imagen_file.save(ruta)
             imagen = url_for('static', filename=f'img/{filename}')
-        nuevo = Producto(nombre=nombre, descripcion=descripcion, categoria=categoria, precio=precio, imagen=imagen, presentacion=presentacion, marca=marca)
+        stock = int(request.form.get('stock', 0))
+        nuevo = Producto(nombre=nombre, descripcion=descripcion, categoria=categoria, precio=precio, imagen=imagen, presentacion=presentacion, marca=marca, stock=stock)
         db.session.add(nuevo)
         db.session.commit()
         flash('Producto agregado correctamente.', 'success')
@@ -80,6 +80,7 @@ def editar_producto(id):
             ruta = os.path.join('app/static/img', filename)
             imagen_file.save(ruta)
             producto.imagen = url_for('static', filename=f'img/{filename}')
+        producto.stock = int(request.form.get('stock', producto.stock))
         db.session.commit()
         flash('Producto editado correctamente.', 'success')
         return redirect(url_for('auth.dashboard'))
