@@ -37,9 +37,9 @@
             {% endfor %}
         </tbody>
     </table>
-    <div class="text-end fw-bold fs-5 mb-3">Total a pagar: ${{ total_general }}</div>
-    <form action="{{ url_for('orders.create_order') }}" method="post">
-        <button type="submit" class="btn btn-success">Solicitar Pedido</button>
+    <div class="text-end fw-bold fs-5 mb-3">Total a pagar: ${{ total_general if total_general > 0 else total_item }}</div>
+    <form action="{{ url_for('orders.create_order') }}" method="post" class="text-end">
+        <button type="submit" class="btn btn-success">Hacer pedido</button>
     </form>
     <a href="{{ url_for('auth.dashboard') }}" class="btn btn-primary mt-3"><i class="fas fa-arrow-left"></i> Seguir añadiendo productos</a>
     {% else %}

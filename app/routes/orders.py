@@ -1,7 +1,8 @@
-from flask import Blueprint, redirect, url_for, render_template, flash
+from flask import Blueprint, redirect, url_for, render_template, flash, make_response, render_template_string, request
 from flask_login import login_required, current_user
 from app import db
 from app.models.users import Cart, CartItem, Order, OrderItem
+import pdfkit
 
 bp = Blueprint('orders', __name__, url_prefix='/orders')
 
@@ -51,3 +52,27 @@ def accept_order(order_id):
         flash('Pedido no encontrado o ya aceptado.', 'danger')
     # Redirigir al panel de admin
     return redirect(url_for('auth.dashboard'))
+
+@bp.route('/generate_invoice/<int:order_id>', methods=['POST'])
+@login_required
+def generate_invoice(order_id):
+    order = Order.query.get_or_404(order_id)
+    if order.user_id != current_user.idUser and current_user.role != 'admin':
+        flash('No tienes permiso para ver esta factura.', 'danger')
+        return redirect(url_for('orders.view_orders'))
+    if order.status != 'aceptado':
+        flash('La factura solo está disponible para pedidos aceptados.', 'danger')
+        return redirect(url_for('orders.view_orders'))
+    items = order.items
+    total_general = sum(item.quantity * item.price for item in items)
+    from app.models.users import Users
+    user = Users.query.get(order.user_id)
+    html = render_template('invoice.html', order=order, items=items, total_general=total_general, user=user)
+    import pdfkit
+    config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
+    pdf = pdfkit.from_string(html, False, configuration=config)
+    from flask import make_response
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=factura_{order.id}.pdf'
+    return response

@@ -20,6 +20,9 @@
                 <td>
                     {% if order.status == 'aceptado' %}
                         <span class="badge bg-info">Aceptado</span>
+                        <form action="{{ url_for('orders.generate_invoice', order_id=order.id) }}" method="post" target="_blank" style="display:inline;">
+                            <button type="submit" class="btn btn-warning btn-sm ms-2">Imprimir factura PDF</button>
+                        </form>
                     {% elif order.status == 'en_camino' %}
                         <span class="badge bg-warning">En camino</span>
                     {% elif order.status == 'entregado' %}
@@ -49,5 +52,6 @@
     {% else %}
     <p>No tienes pedidos realizados.</p>
     {% endif %}
+    <a href="{{ url_for('auth.dashboard') }}" class="btn btn-secondary mt-4"><i class="fas fa-arrow-left"></i> Volver a la vista de usuario</a>
 </div>
 {% endblock %}
