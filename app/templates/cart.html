@@ -14,10 +14,7 @@
             </tr>
         </thead>
         <tbody>
-            {% set total_general = 0 %}
             {% for item in items %}
-            {% set total_item = item.quantity * item.price %}
-            {% set total_general = total_general + total_item %}
             <tr>
                 <td>{{ item.product_name }}</td>
                 <td>
@@ -27,7 +24,7 @@
                     </form>
                 </td>
                 <td>${{ item.price }}</td>
-                <td>${{ total_item }}</td>
+                <td>${{ item.quantity * item.price }}</td>
                 <td>
                     <form action="{{ url_for('cart.remove_from_cart', item_id=item.id) }}" method="post" style="display:inline;">
                         <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
@@ -37,7 +34,7 @@
             {% endfor %}
         </tbody>
     </table>
-    <div class="text-end fw-bold fs-5 mb-3">Total a pagar: ${{ total_general if total_general > 0 else total_item }}</div>
+    <div class="text-end fw-bold fs-5 mb-3">Total a pagar: ${{ total_general }}</div>
     <form action="{{ url_for('orders.create_order') }}" method="post" class="text-end">
         <button type="submit" class="btn btn-success">Hacer pedido</button>
     </form>
