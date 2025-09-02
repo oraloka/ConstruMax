@@ -33,14 +33,21 @@ def view_orders():
 @login_required
 def accept_order(order_id):
     from app.models.users import Users
+    from app.models.productos import Producto
     if current_user.role != 'admin':
         flash('Solo el administrador puede aceptar pedidos.', 'danger')
         return redirect(url_for('orders.view_orders'))
     order = Order.query.get(order_id)
     if order and order.status == 'pendiente':
+        # Descontar stock de cada producto
+        for item in order.items:
+            producto = Producto.query.get(item.product_id)
+            if producto:
+                producto.stock = max(producto.stock - item.quantity, 0)
         order.status = 'aceptado'
         db.session.commit()
-        flash('Pedido aceptado correctamente.', 'success')
+        flash('Pedido aceptado y stock actualizado.', 'success')
     else:
         flash('Pedido no encontrado o ya aceptado.', 'danger')
-    return redirect(url_for('orders.view_orders'))
+    # Redirigir al panel de admin
+    return redirect(url_for('auth.dashboard'))
