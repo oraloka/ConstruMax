@@ -272,6 +272,65 @@ body {
     100% { transform: translateX(0); opacity: 1; }
 }
 
+/* Nuevos estilos para Sobre Nosotros */
+#sobre-nosotros {
+    padding: 80px 0;
+    background: #FFFFFF;
+}
+#sobre-nosotros h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+#sobre-nosotros p {
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+/* Nuevos estilos para Servicios */
+#servicios {
+    padding: 80px 0;
+}
+#servicios .card {
+    border-radius: 15px;
+    background: linear-gradient(135deg, #F5F5F5, #EDE4D3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+#servicios .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.15);
+}
+#servicios i {
+    color: #007bff;
+}
+
+/* Nuevos estilos para Contacto */
+#contacto {
+    padding: 80px 0;
+}
+#contacto form {
+    background: #F5F5F5;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 123, 255, 0.08);
+}
+#contacto .form-label {
+    font-weight: 500;
+}
+#contacto .form-control {
+    border-radius: 10px;
+    border-color: #EDE4D3;
+}
+#contacto .btn-primary {
+    background: linear-gradient(45deg, #007bff, #00c6ff);
+    border: none;
+}
+#contacto .btn-primary:hover {
+    background: #FF9800;
+}
+#contacto .map-placeholder {
+    border: 1px solid #EDE4D3;
+}
+
 @media (max-width: 768px) {
     .banner {
         padding: 50px 0;
@@ -288,5 +347,11 @@ body {
     }
     .nav-link {
         font-size: 0.9rem;
+    }
+    #sobre-nosotros .row, #servicios .row, #contacto .row {
+        flex-direction: column;
+    }
+    #contacto form {
+        margin-bottom: 20px;
     }
 }
