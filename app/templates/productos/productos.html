@@ -33,7 +33,7 @@
                         <p class="mb-1"><strong>Marca:</strong> {{ producto.marca or 'N/A' }}</p>
                         <p class="mb-1"><strong>Presentación:</strong> {{ producto.presentacion or 'N/A' }}</p>
                         <p class="mb-1"><strong>Stock:</strong> <span class="text-success">{{ producto.stock }}</span></p>
-                        <p class="mb-2 fs-5 fw-bold text-warning">${{ producto.precio }}</p>
+                        <p class="mb-2 fs-5 fw-bold text-warning">{{ producto.precio|cop }}</p>
                         <form action="{{ url_for('cart.add_to_cart', product_id=producto.id) }}" method="post" class="mt-auto">
                             <div class="input-group mb-2">
                                 <input type="number" name="quantity" value="1" min="1" max="{{ producto.stock }}" class="form-control form-control-sm rounded-start-pill" style="width:80px;">

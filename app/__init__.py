@@ -32,6 +32,16 @@ def create_app():
     app.register_blueprint(orders.bp)
 
     # Ruta principal para la vista principal
+    # Filtro para mostrar precios en formato COP
+    from markupsafe import Markup
+    def cop_format(value):
+        try:
+            value = float(value)
+            return Markup(f'$ {value:,.0f}'.replace(',', '.'))
+        except Exception:
+            return value
+    app.jinja_env.filters['cop'] = cop_format
+
     @app.route('/')
     def main():
         from .models.productos import Producto
