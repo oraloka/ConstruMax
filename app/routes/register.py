@@ -9,9 +9,12 @@ bp = Blueprint('register', __name__)
 def register():
     if request.method == 'POST':
         nameUser = request.form['nameUser']
+        apellidoUser = request.form['apellidoUser']
+        telefonoUser = request.form['telefonoUser']
         email = request.form['email']
+        direccionUser = request.form['direccionUser']
         passwordUser = request.form['passwordUser']
-        
+
         if Users.query.filter_by(nameUser=nameUser).first():
             flash('El nombre de usuario ya existe.', 'danger')
             return redirect(url_for('register.register'))
@@ -21,7 +24,15 @@ def register():
 
         role = request.form.get('role', 'user')
         hashed_password = generate_password_hash(passwordUser)
-        new_user = Users(nameUser=nameUser, email=email, passwordUser=hashed_password, role=role)
+        new_user = Users(
+            nameUser=nameUser,
+            apellidoUser=apellidoUser,
+            telefonoUser=telefonoUser,
+            email=email,
+            direccionUser=direccionUser,
+            passwordUser=hashed_password,
+            role=role
+        )
         db.session.add(new_user)
         db.session.commit()
         flash('¡Registro exitoso! Ahora puedes iniciar sesión.', 'success')

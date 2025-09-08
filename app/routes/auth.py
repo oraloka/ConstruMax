@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session
 from flask_login import login_user, logout_user, login_required, current_user
 from app.models.users import Users
 from app.models.productos import Producto
@@ -9,9 +9,23 @@ bp = Blueprint('auth', __name__)
 # Cambiar la ruta de login a /login
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
+    import random
     if request.method == 'POST':
-        nameUser = request.form['nameUser']
-        passwordUser = request.form['passwordUser']
+        nameUser = request.form.get('nameUser')
+        passwordUser = request.form.get('passwordUser')
+        captcha = request.form.get('captcha')
+        captcha_answer = session.get('captcha_answer')
+
+        # Validar captcha
+        if not captcha_answer or captcha != str(captcha_answer):
+            flash('Captcha incorrecto. Por favor responde correctamente la pregunta.', 'danger')
+            return render_template("login.html", captcha_question=session.get('captcha_question'))
+
+        # Validar campos obligatorios
+        if not all([nameUser, passwordUser]):
+            flash('Usuario y contraseña son obligatorios.', 'danger')
+            return render_template("login.html", captcha_question=session.get('captcha_question'))
+
         user = Users.query.filter_by(nameUser=nameUser).first()
         if user:
             from werkzeug.security import check_password_hash
@@ -19,10 +33,19 @@ def login():
                 login_user(user)
                 flash("Login successful!", "success")
                 return redirect(url_for('auth.dashboard'))
-        flash('Invalid credentials. Please try again.', 'danger')
+        flash('Credenciales inválidas. Por favor verifica tus datos.', 'danger')
+        # Generar nueva captcha tras intento fallido
+        a, b = random.randint(1, 9), random.randint(1, 9)
+        session['captcha_question'] = f"¿Eres humano? Escribe el resultado: {a} + {b} ="
+        session['captcha_answer'] = a + b
+        return render_template("login.html", captcha_question=session['captcha_question'])
     if current_user.is_authenticated:
         return redirect(url_for('auth.dashboard'))
-    return render_template("login.html")
+    # Generar captcha al cargar la página
+    a, b = random.randint(1, 9), random.randint(1, 9)
+    session['captcha_question'] = f"¿Eres humano? Escribe el resultado: {a} + {b} ="
+    session['captcha_answer'] = a + b
+    return render_template("login.html", captcha_question=session['captcha_question'])
 
 @bp.route('/dashboard')
 @login_required
