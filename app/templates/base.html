@@ -19,8 +19,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('main') }}">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Iniciar sesión</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('register.register') }}">Registrarse</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.profile') }}">Mi perfil</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Cerrar sesión</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Iniciar sesión</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('register.register') }}">Registrarse</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

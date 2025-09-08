@@ -64,8 +64,9 @@
             </div>
         {% endfor %}
     </div>
-    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger mt-4">Logout</a>
-    <a href="{{ url_for('orders.view_orders') }}" class="btn btn-info mt-3"><i class="fas fa-list"></i> Ver mis pedidos</a>
+    <a href="{{ url_for('auth.profile') }}" class="btn btn-secondary mt-4">Mi perfil</a>
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger mt-4 ms-2">Logout</a>
+    <a href="{{ url_for('orders.view_orders') }}" class="btn btn-info mt-3 ms-2"><i class="fas fa-list"></i> Ver mis pedidos</a>
 </div>
 </body>
 </html>

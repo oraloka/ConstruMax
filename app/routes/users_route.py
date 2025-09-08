@@ -22,11 +22,13 @@ def destacados():
     flash('Productos destacados actualizados.', 'success')
     usuarios = Users.query.all()
     productos = Producto.query.all()
+    categorias = Producto.query.with_entities(Producto.categoria).distinct().all()
+    categorias = [c[0] for c in categorias if c[0]]
     from app.models.users import Order
     pedidos = Order.query.order_by(Order.created_at.desc()).all()
     if pedidos is None:
         pedidos = []
-    return render_template('admin_dashboard.html', usuarios=usuarios, productos=productos, pedidos=pedidos)
+    return render_template('admin_dashboard.html', usuarios=usuarios, productos=productos, pedidos=pedidos, categorias=categorias)
 
 # Vista general de productos
 @bp.route('/productos')
@@ -44,10 +46,19 @@ def productos_categoria(categoria):
 @bp.route('/productos/agregar', methods=['GET', 'POST'])
 def agregar_producto():
     if request.method == 'POST':
+        required_fields = ['nombre', 'descripcion', 'categoria', 'precio_compra', 'porcentaje_ganancia', 'iva']
+        for field in required_fields:
+            if field not in request.form or request.form[field] == '':
+                flash(f'El campo {field} es obligatorio.', 'danger')
+                return redirect(url_for('productos.agregar_producto'))
         nombre = request.form['nombre']
         descripcion = request.form['descripcion']
         categoria = request.form['categoria']
-        precio = float(request.form['precio'])
+        precio_compra = float(request.form['precio_compra'])
+        porcentaje_ganancia = float(request.form['porcentaje_ganancia'])
+        iva = float(request.form['iva'])
+        # Calcular precio final
+        precio = precio_compra * (1 + porcentaje_ganancia/100) * (1 + iva/100)
         presentacion = request.form.get('presentacion', '')
         marca = request.form.get('marca', '')
         imagen_file = request.files.get('imagen')
@@ -61,7 +72,7 @@ def agregar_producto():
         nuevo = Producto(nombre=nombre, descripcion=descripcion, categoria=categoria, precio=precio, imagen=imagen, presentacion=presentacion, marca=marca, stock=stock)
         db.session.add(nuevo)
         db.session.commit()
-        flash('Producto agregado correctamente.', 'success')
+        flash(f'Producto agregado correctamente. Precio final: ${precio:,.0f}', 'success')
         return redirect(url_for('auth.dashboard'))
     # Obtener categorías únicas para el select
     categorias = db.session.query(Producto.categoria).distinct().all()
@@ -128,8 +139,10 @@ def bloquear_usuario(id):
     from app.models.productos import Producto
     usuarios = Users.query.all()
     productos = Producto.query.all()
+    categorias = Producto.query.with_entities(Producto.categoria).distinct().all()
+    categorias = [c[0] for c in categorias if c[0]]
     mensaje_bloqueo = 'Usuario bloqueado.'
-    return render_template('admin_dashboard.html', usuarios=usuarios, productos=productos, mensaje_bloqueo=mensaje_bloqueo)
+    return render_template('admin_dashboard.html', usuarios=usuarios, productos=productos, mensaje_bloqueo=mensaje_bloqueo, categorias=categorias)
 
 @bp.route('/usuarios/desbloquear/<int:id>')
 def desbloquear_usuario(id):
@@ -139,5 +152,7 @@ def desbloquear_usuario(id):
     from app.models.productos import Producto
     usuarios = Users.query.all()
     productos = Producto.query.all()
+    categorias = Producto.query.with_entities(Producto.categoria).distinct().all()
+    categorias = [c[0] for c in categorias if c[0]]
     mensaje_desbloqueo = 'Usuario desbloqueado.'
-    return render_template('admin_dashboard.html', usuarios=usuarios, productos=productos, mensaje_desbloqueo=mensaje_desbloqueo)
+    return render_template('admin_dashboard.html', usuarios=usuarios, productos=productos, mensaje_desbloqueo=mensaje_desbloqueo, categorias=categorias)

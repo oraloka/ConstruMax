@@ -11,6 +11,7 @@ class Users(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     direccionUser = db.Column(db.String(255), nullable=False)
     passwordUser = db.Column(db.String(120), nullable=False)
+    foto_perfil = db.Column(db.String(255))
     role = db.Column(db.String(20), nullable=False, default='user')
     bloqueado = db.Column(db.Boolean, default=False)
 

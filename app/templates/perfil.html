@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4 text-center text-primary fw-bold">Mi Perfil</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post" action="{{ url_for('auth.profile') }}" enctype="multipart/form-data" class="card shadow-lg p-4">
+                <div class="text-center mb-4">
+                    <img src="{{ current_user.foto_perfil or url_for('static', filename='img/default_profile.png') }}" class="rounded-circle border" style="width:120px; height:120px; object-fit:cover;" alt="Foto de perfil">
+                </div>
+                <div class="mb-3">
+                    <label for="foto_perfil" class="form-label">Cambiar foto de perfil</label>
+                    <input type="file" class="form-control" id="foto_perfil" name="foto_perfil" accept="image/*">
+                </div>
+                <div class="mb-3">
+                    <label for="nameUser" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nameUser" name="nameUser" value="{{ current_user.nameUser }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="apellidoUser" class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="apellidoUser" name="apellidoUser" value="{{ current_user.apellidoUser }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="telefonoUser" class="form-label">Teléfono</label>
+                    <input type="text" class="form-control" id="telefonoUser" name="telefonoUser" value="{{ current_user.telefonoUser }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo electrónico</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ current_user.email }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="direccionUser" class="form-label">Dirección</label>
+                    <input type="text" class="form-control" id="direccionUser" name="direccionUser" value="{{ current_user.direccionUser }}" required>
+                </div>
+                <hr>
+                <div class="mb-3">
+                    <label for="passwordUser" class="form-label">Nueva contraseña</label>
+                    <input type="password" class="form-control" id="passwordUser" name="passwordUser" placeholder="Dejar vacío si no desea cambiar">
+                </div>
+                <div class="mb-3">
+                    <label for="passwordUserConfirm" class="form-label">Confirmar nueva contraseña</label>
+                    <input type="password" class="form-control" id="passwordUserConfirm" name="passwordUserConfirm" placeholder="Repetir nueva contraseña">
+                </div>
+                <button type="submit" class="btn btn-primary w-100 fw-bold mb-3">Actualizar perfil</button>
+                <a href="{{ url_for('productos.productos') }}" class="btn btn-secondary w-100">Regresar al catálogo</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

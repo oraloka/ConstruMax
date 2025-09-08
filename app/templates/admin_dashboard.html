@@ -53,7 +53,7 @@
                                     <td>{{ producto.id }}</td>
                                     <td>{{ producto.nombre }}</td>
                                     <td>{{ producto.categoria }}</td>
-                                    <td>${{ producto.precio }}</td>
+                                    <td>{{ producto.precio|cop }}</td>
                                     <td>{{ producto.marca or 'N/A' }}</td>
                                     <td>
                                         <a href="{{ url_for('productos.editar_producto', id=producto.id) }}" class="btn btn-warning btn-sm">Editar</a>
@@ -130,58 +130,9 @@
                 </div>
             </div>
             <div id="agregar" class="section" style="display:none;">
-                <!-- Gestión de productos -->
-                <div class="card mb-5">
-                    <div class="card-header bg-success text-white">Agregar producto</div>
-                    <div class="card-body">
-                        <form action="{{ url_for('productos.agregar_producto') }}" method="POST" enctype="multipart/form-data">
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="nombre">Nombre</label>
-                                    <input type="text" class="form-control" id="nombre" name="nombre" required>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="categoria">Categoría</label>
-                                    <select class="form-control" id="categoria" name="categoria" required>
-                                        <option value="">Selecciona una categoría</option>
-                                        <option value="boquillas">Boquillas</option>
-                                        <option value="impermeabilizantes">Impermeabilizantes</option>
-                                        <option value="pegantes">Pegantes</option>
-                                        <option value="obra gris">Obra gris</option>
-                                        {% for cat in categorias %}
-                                        <option value="{{ cat }}">{{ cat }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="precio">Precio</label>
-                                    <input type="number" step="0.01" class="form-control" id="precio" name="precio" required>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="presentacion">Presentación</label>
-                                    <input type="text" class="form-control" id="presentacion" name="presentacion">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="marca">Marca</label>
-                                    <input type="text" class="form-control" id="marca" name="marca">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="descripcion">Descripción</label>
-                                    <textarea class="form-control" id="descripcion" name="descripcion" rows="2" required></textarea>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="imagen">Imagen</label>
-                                <input type="file" class="form-control-file" id="imagen" name="imagen">
-                            </div>
-                            <button type="submit" class="btn btn-success">Agregar producto</button>
-                        </form>
-                    </div>
-                </div>
+                <!-- Gestión de productos: usar el formulario mejorado -->
+                {% set categorias = categorias %}
+                {% include 'productos/agregar.html' %}
             </div>
             <div id="pedidos" class="section" style="display:none;">
                 <div class="card mb-5">
