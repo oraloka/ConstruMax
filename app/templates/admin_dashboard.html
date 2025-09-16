@@ -24,12 +24,66 @@
                 <li class="nav-item"><a class="nav-link" href="#destacados" onclick="showSection('destacados')">Destacados</a></li>
                 <li class="nav-item"><a class="nav-link" href="#usuarios" onclick="showSection('usuarios')">Usuarios</a></li>
                 <li class="nav-item"><a class="nav-link" href="#agregar" onclick="showSection('agregar')">Agregar producto</a></li>
+                <li class="nav-item"><a class="nav-link" href="#admin_info" onclick="showSection('admin_info')">Mi información</a></li>
                 <li class="nav-item"><a class="nav-link" href="#pedidos" onclick="showSection('pedidos')">Pedidos</a></li>
                 <li class="nav-item"><a class="nav-link text-danger" href="{{ url_for('auth.logout') }}">Cerrar sesión</a></li>
+            <!-- ...sidebar code... -->
             </ul>
         </nav>
         <!-- Main content -->
-        <div class="flex-grow-1 p-4">
+    <div class="flex-grow-1 p-4" style="min-width:0;">
+        <div id="admin_info" class="section" style="display:none;">
+            <div class="card mb-5">
+                <div class="card-header bg-dark text-white">Mi información de administrador</div>
+                <div class="card-body">
+                        <form action="{{ url_for('auth.admin_profile') }}" method="POST" enctype="multipart/form-data">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="nameUser">Nombre</label>
+                                <input type="text" class="form-control" id="nameUser" name="nameUser" value="{{ current_user.nameUser }}" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="apellidoUser">Apellido</label>
+                                <input type="text" class="form-control" id="apellidoUser" name="apellidoUser" value="{{ current_user.apellidoUser }}" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="telefonoUser">Teléfono</label>
+                                <input type="text" class="form-control" id="telefonoUser" name="telefonoUser" value="{{ current_user.telefonoUser }}" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="email">Correo electrónico</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ current_user.email }}" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="direccionUser">Dirección</label>
+                                <input type="text" class="form-control" id="direccionUser" name="direccionUser" value="{{ current_user.direccionUser }}" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="foto_perfil">Foto de perfil</label>
+                                <input type="file" class="form-control-file" id="foto_perfil" name="foto_perfil">
+                                {% if current_user.foto_perfil %}
+                                    <img src="{{ current_user.foto_perfil }}" alt="Foto de perfil" class="img-thumbnail mt-2" style="max-width:120px;">
+                                {% endif %}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="passwordUser">Nueva contraseña</label>
+                                <input type="password" class="form-control" id="passwordUser" name="passwordUser" placeholder="Nueva contraseña">
+                                <label for="passwordUserConfirm" class="mt-2">Confirmar contraseña</label>
+                                <input type="password" class="form-control" id="passwordUserConfirm" name="passwordUserConfirm" placeholder="Confirmar contraseña">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Actualizar información</button>
+                        <a href="{{ url_for('auth.dashboard') }}" class="btn btn-secondary ml-2">Volver al panel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
             <div id="productos" class="section">
                 <!-- Gestión de edición de productos -->
                 <div class="card mb-5">
@@ -193,11 +247,16 @@
         </div>
     </div>
 </div>
+</script>
 <script>
 function showSection(section) {
     document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
     document.getElementById(section).style.display = 'block';
 }
+// Mostrar la sección de productos por defecto al cargar
+window.addEventListener('DOMContentLoaded', function() {
+    showSection('productos');
+});
 </script>
 </body>
 </html>
