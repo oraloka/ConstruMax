@@ -22,7 +22,13 @@ def register():
             flash('El correo electrónico ya está registrado.', 'danger')
             return redirect(url_for('register.register'))
 
-        role = request.form.get('role', 'user')
+        import re
+        # Validación de contraseña fuerte
+        password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$'
+        if not re.match(password_regex, passwordUser):
+            flash('La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.', 'danger')
+            return redirect(url_for('register.register'))
+
         hashed_password = generate_password_hash(passwordUser)
         new_user = Users(
             nameUser=nameUser,
@@ -31,7 +37,7 @@ def register():
             email=email,
             direccionUser=direccionUser,
             passwordUser=hashed_password,
-            role=role
+            role='user'  # Forzar rol user
         )
         db.session.add(new_user)
         db.session.commit()

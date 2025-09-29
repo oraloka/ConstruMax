@@ -48,4 +48,25 @@ def create_app():
         productos = Producto.query.filter_by(destacado=True).all()
         return render_template('main.html', productos=productos)
 
+    # Crear tablas y usuario admin automáticamente si no existen
+    from app.models.users import Users
+    from werkzeug.security import generate_password_hash
+    with app.app_context():
+        db.create_all()
+        admin_email = 'cajlpj@gmail.com'
+        admin_password = 'CRclass123@'
+        admin = Users.query.filter_by(email=admin_email).first()
+        if not admin:
+            hashed_password = generate_password_hash(admin_password)
+            admin_user = Users(
+                nameUser='Admin',
+                apellidoUser='Principal',
+                telefonoUser='0000000000',
+                email=admin_email,
+                direccionUser='Oficina Principal',
+                passwordUser=hashed_password,
+                role='admin'
+            )
+            db.session.add(admin_user)
+            db.session.commit()
     return app
