@@ -3,270 +3,540 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Tienda virtual de materiales de construcción ConstruMax - Calidad y durabilidad garantizadas">
-    <meta name="keywords" content="materiales de construcción, construMax, pegantes, impermeabilizantes, obra gris">
-    <title>Materiales de Construcción - ConstruMax</title>
+    <meta name="description" content="ConstruMax - Materiales de construcción de alta calidad. Pegantes, impermeabilizantes, obra gris y más.">
+    <meta name="keywords" content="materiales de construcción, ConstruMax, pegantes, impermeabilizantes, obra gris, boquillas">
+    <title>{% block title %}ConstruMax - Materiales de Construcción{% endblock %}</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #2C1810;
+            --secondary-color: #8B7355;
+            --accent-color: #D4A574;
+            --construction-orange: #FF6B35;
+            --concrete-gray: #8B8680;
+            --steel-blue: #4A5568;
+            --warm-white: #F7F5F3;
+            --text-dark: #1A1A1A;
+            --text-light: #6B7280;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --shadow-heavy: rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--warm-white);
+        }
+
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Navigation */
+        .navbar-professional {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px var(--shadow-medium);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand-professional {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+            text-decoration: none;
+        }
+
+        .logo-professional {
+            width: 40px;
+            height: 40px;
+            margin-right: 12px;
+            background: var(--construction-orange);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .nav-link-professional {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.75rem 1rem !important;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link-professional:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-professional {
+            background: var(--construction-orange);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-professional:hover {
+            background: #e55a2b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+            color: white;
+        }
+
+        .btn-secondary-professional {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary-professional:hover {
+            background: white;
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-professional {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 50%, var(--accent-color) 100%);
+            color: white;
+            padding: 120px 0 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-professional::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        /* Cards */
+        .card-professional {
+            background: white;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px var(--shadow-light);
+            transition: all 0.4s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-professional:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px var(--shadow-medium);
+        }
+
+        .card-professional::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--construction-orange), var(--accent-color));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .card-professional:hover::before {
+            transform: scaleX(1);
+        }
+
+        .category-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--construction-orange), var(--accent-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        /* Buttons */
+        .btn-outline-professional {
+            border: 2px solid var(--construction-orange);
+            color: var(--construction-orange);
+            background: transparent;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-professional:hover {
+            background: var(--construction-orange);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--construction-orange), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        /* Footer */
+        .footer-professional {
+            background: var(--primary-color);
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-professional a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-professional a:hover {
+            color: var(--construction-orange);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        {% block extra_css %}{% endblock %}
+    </style>
+    
+    {% block head %}{% endblock %}
 </head>
 <body>
-    {% block content %}
-    <!-- Navbar -->
-    <section class="menu menu2 position-absolute w-100" style="z-index:1000;">
-        <nav class="navbar navbar-dropdown navbar-expand-lg navbar-dark bg-primary shadow-lg">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-professional fixed-top">
+        <div class="container">
+            <a class="navbar-brand-professional" href="{{ url_for('main') if url_for else '#' }}">
+                <div class="logo-professional">
+                    <i class="fas fa-hard-hat"></i>
+                </div>
+                <span class="font-display">ConstruMax</span>
+            </a>
+            
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto me-4">
+                    <li class="nav-item">
+                        <a class="nav-link-professional" href="/">
+                            <i class="fas fa-home me-2"></i>Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link-professional" href="#categorias">
+                            <i class="fas fa-th-large me-2"></i>Productos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link-professional" href="#servicios">
+                            <i class="fas fa-tools me-2"></i>Servicios
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link-professional" href="#contacto">
+                            <i class="fas fa-envelope me-2"></i>Contacto
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('auth.login') if url_for else '#' }}" class="btn btn-secondary-professional">
+                        <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                    </a>
+                    <a href="#cotizar" class="btn btn-professional">
+                        <i class="fas fa-calculator me-2"></i>Cotizar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main style="padding-top: 80px;">
+        {% block content %}
+        <!-- Hero Section -->
+        <section id="inicio" class="hero-professional">
             <div class="container">
-                <div class="navbar-brand d-flex align-items-center">
-                    <span class="navbar-logo me-2">
-                        <a href="#">
-                            <img src="https://r.mobirisesite.com/1777140/assets/images/photo-1722223223122-51aa1188be4c.png" alt="ConstruMax" style="height:3rem;">
-                        </a>
-                    </span>
-                    <span class="navbar-caption-wrap">
-                        <a class="navbar-caption text-white fw-bold" href="#">ConstruMax</a>
-                    </span>
-                </div>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <div class="hamburger">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav nav-dropdown ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link link text-white" href="#">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link link text-white" href="#categorias">Productos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link link text-white" href="#servicios">Servicios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link link text-white" href="#contacto">Contacto</a>
-                        </li>
-                    </ul>
-                    <div class="icons-menu ms-3">
-                        <a class="iconfont-wrapper text-white" href="tel:+573001234567" title="Llámanos">
-                            <i class="fas fa-phone"></i>
-                        </a>
-                        <a class="iconfont-wrapper text-white ms-2" href="mailto:info@construMax.com" title="Email">
-                            <i class="fas fa-envelope"></i>
-                        </a>
-                        <a class="iconfont-wrapper text-white ms-2" href="#ubicacion" title="Ubicación">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </a>
-                        <a class="iconfont-wrapper text-white ms-2" href="#carrito" title="Carrito">
-                            <i class="fas fa-shopping-cart"></i>
-                        </a>
-                    </div>
-                    <div class="navbar-buttons mbr-section-btn ms-3">
-                        <a href="{{ url_for('auth.login') }}" class="btn btn-light fw-bold text-primary shadow-sm">Iniciar sesión</a>
-                        <a href="#cotizar" class="btn btn-primary ms-2 fw-bold shadow-sm">Cotizar</a>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </section>
-
-    <!-- Banner -->
-    <section class="banner py-5 bg-gradient text-white position-relative overflow-hidden">
-        <div class="container text-center">
-            <h1 class="display-3 fw-bold mb-3 text-shadow">Materiales de Construcción</h1>
-            <p class="lead mb-4 fs-5">Encuentra los materiales para la construcción de tu proyecto o remodelación de tus espacios. Productos de alta calidad e innovadores con mayor resistencia, durabilidad y protección.</p>
-            <a href="#categorias" class="btn btn-warning btn-lg shadow-lg rounded-pill">Ver categorías</a>
-        </div>
-        <div class="position-absolute top-50 start-0 translate-middle-y bg-primary opacity-25" style="width: 100px; height: 100px; border-radius: 50%; z-index: -1;"></div>
-    </section>
-
-    <!-- Categorías -->
-    <section id="categorias" class="py-5 bg-light">
-        <div class="container">
-            <h2 class="mb-4 text-primary fw-bold text-center border-bottom border-primary pb-2">Categorías principales</h2>
-            <div class="row g-4 justify-content-center">
-                <div class="col-md-3">
-                    <div class="card category-card h-100 border-0 shadow-lg">
-                        <div class="card-body text-center p-4">
-                            <img src="https://via.placeholder.com/80x80?text=Pegantes" class="mb-3 img-fluid rounded-circle" alt="Pegantes">
-                            <h5 class="card-title fw-bold text-primary">Pegantes</h5>
-                            <p class="card-text text-muted">Soluciones para unir y fijar materiales con máxima resistencia.</p>
-                            <a href="{{ url_for('productos.productos_categoria', categoria='pegantes') }}" class="btn btn-outline-primary mt-3 rounded-pill">Ver productos</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card category-card h-100 border-0 shadow-lg">
-                        <div class="card-body text-center p-4">
-                            <img src="https://via.placeholder.com/80x80?text=Boquillas" class="mb-3 img-fluid rounded-circle" alt="Boquillas">
-                            <h5 class="card-title fw-bold text-primary">Boquillas</h5>
-                            <p class="card-text text-muted">Acabados perfectos para juntas y terminaciones.</p>
-                            <a href="{{ url_for('productos.productos_categoria', categoria='boquillas') }}" class="btn btn-outline-primary mt-3 rounded-pill">Ver productos</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card category-card h-100 border-0 shadow-lg">
-                        <div class="card-body text-center p-4">
-                            <img src="https://via.placeholder.com/80x80?text=Impermeabilizantes" class="mb-3 img-fluid rounded-circle" alt="Impermeabilizantes">
-                            <h5 class="card-title fw-bold text-primary">Impermeabilizantes</h5>
-                            <p class="card-text text-muted">Protege tus espacios contra la humedad y filtraciones.</p>
-                            <a href="{{ url_for('productos.productos_categoria', categoria='impermeabilizantes') }}" class="btn btn-outline-primary mt-3 rounded-pill">Ver productos</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card category-card h-100 border-0 shadow-lg">
-                        <div class="card-body text-center p-4">
-                            <img src="https://via.placeholder.com/80x80?text=Obra+Gris" class="mb-3 img-fluid rounded-circle" alt="Obra gris">
-                            <h5 class="card-title fw-bold text-primary">Obra gris</h5>
-                            <p class="card-text text-muted">Materiales esenciales para la estructura y base de tu proyecto.</p>
-                            <a href="{{ url_for('productos.productos_categoria', categoria='obra gris') }}" class="btn btn-outline-primary mt-3 rounded-pill">Ver productos</a>
+                <div class="row align-items-center">
+                    <div class="col-lg-8 mx-auto text-center">
+                        <h1 class="hero-title">Materiales de Construcción de Calidad Superior</h1>
+                        <p class="hero-subtitle">Encuentra los mejores materiales para tu proyecto. Productos innovadores con mayor resistencia, durabilidad y protección garantizada.</p>
+                        <div class="d-flex gap-3 justify-content-center flex-wrap">
+                            <a href="#categorias" class="btn btn-professional btn-lg">
+                                <i class="fas fa-eye me-2"></i>Ver Catálogo
+                            </a>
+                            <a href="#contacto" class="btn btn-secondary-professional btn-lg">
+                                <i class="fas fa-phone me-2"></i>Contactar
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Productos destacados -->
-    <section class="py-5">
-        <div class="container">
-            <h2 class="mb-4 text-primary fw-bold text-center border-bottom border-primary pb-2">Productos destacados</h2>
-            <div class="row g-4 justify-content-center">
-                {% for producto in productos if producto.destacado %}
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-lg">
-                        <img src="{{ producto.imagen or 'https://via.placeholder.com/350x200?text=Producto+Destacado' }}" class="card-img-top img-fluid" alt="{{ producto.nombre }}">
-                        <div class="card-body p-4">
-                            <h5 class="card-title fw-bold text-primary">{{ producto.nombre }}</h5>
-                            <p class="card-text text-muted">{{ producto.descripcion }}</p>
-                            <span class="badge bg-warning text-dark mb-2">Destacado</span>
-                            <form action="{{ url_for('cart.add_to_cart', product_id=producto.id) }}" method="post" style="display:inline;">
-                                <button type="submit" class="btn btn-success mt-2 rounded-pill"><i class="fas fa-cart-plus"></i> Agregar al carrito</button>
-                            </form>
-                            <a href="#" class="btn btn-primary mt-3 rounded-pill">Ver más</a>
+        <!-- Categories Section -->
+        <section id="categorias" class="py-5">
+            <div class="container">
+                <h2 class="section-title">Nuestras Categorías</h2>
+                <div class="row g-4">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card-professional h-100 text-center p-4">
+                            <div class="category-icon">
+                                <i class="fas fa-fill-drip"></i>
+                            </div>
+                            <h5 class="font-display fw-bold mb-3">Pegantes</h5>
+                            <p class="text-muted mb-4">Soluciones adhesivas de alta resistencia para unir y fijar materiales con máxima durabilidad.</p>
+                            <a href="{{ url_for('productos.productos_categoria', categoria='pegantes') if url_for else '#' }}" class="btn btn-outline-professional">
+                                Ver Productos
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card-professional h-100 text-center p-4">
+                            <div class="category-icon">
+                                <i class="fas fa-spray-can"></i>
+                            </div>
+                            <h5 class="font-display fw-bold mb-3">Boquillas</h5>
+                            <p class="text-muted mb-4">Acabados perfectos para juntas y terminaciones profesionales en todos tus proyectos.</p>
+                            <a href="{{ url_for('productos.productos_categoria', categoria='boquillas') if url_for else '#' }}" class="btn btn-outline-professional">
+                                Ver Productos
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card-professional h-100 text-center p-4">
+                            <div class="category-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h5 class="font-display fw-bold mb-3">Impermeabilizantes</h5>
+                            <p class="text-muted mb-4">Protección total contra humedad y filtraciones para espacios duraderos y seguros.</p>
+                            <a href="{{ url_for('productos.productos_categoria', categoria='impermeabilizantes') if url_for else '#' }}" class="btn btn-outline-professional">
+                                Ver Productos
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card-professional h-100 text-center p-4">
+                            <div class="category-icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <h5 class="font-display fw-bold mb-3">Obra Gris</h5>
+                            <p class="text-muted mb-4">Materiales esenciales para la estructura y base sólida de cualquier construcción.</p>
+                            <a href="{{ url_for('productos.productos_categoria', categoria='obra gris') if url_for else '#' }}" class="btn btn-outline-professional">
+                                Ver Productos
+                            </a>
                         </div>
                     </div>
                 </div>
-                {% else %}
-                <div class="col-12">
-                    <div class="alert alert-info text-center shadow-sm">No hay productos destacados seleccionados por el administrador.</div>
-                </div>
-                {% endfor %}
             </div>
-        </div>
-    </section>
-
-    <!-- Sobre Nosotros -->
-    <section id="sobre-nosotros" class="py-5 bg-white">
-        <div class="container">
-            <h2 class="mb-4 text-primary fw-bold text-center border-bottom border-primary pb-2">Sobre Nosotros</h2>
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <img src="https://via.placeholder.com/500x300?text=Sobre+Nosotros" class="img-fluid rounded shadow-sm" alt="Sobre Nosotros">
-                </div>
-                <div class="col-md-6">
-                    <h3 class="fw-bold text-primary">Nuestra Historia</h3>
-                    <p class="text-muted">ConstruMax ha sido líder en el suministro de materiales de construcción desde 2010, ofreciendo soluciones innovadoras y sostenibles para proyectos de todo tipo.</p>
-                    <h3 class="fw-bold text-primary mt-4">Misión</h3>
-                    <p class="text-muted">Proveer materiales de alta calidad que impulsen la construcción segura y eficiente, con un compromiso hacia la sostenibilidad y el cliente.</p>
-                    <h3 class="fw-bold text-primary mt-4">Visión</h3>
-                    <p class="text-muted">Ser la empresa de referencia en materiales de construcción en América Latina para 2030, destacando por innovación y excelencia.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Servicios -->
-    <section id="servicios" class="py-5 bg-light">
-        <div class="container">
-            <h2 class="mb-4 text-primary fw-bold text-center border-bottom border-primary pb-2">Nuestros Servicios</h2>
-            <div class="row g-4 justify-content-center">
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-lg text-center p-4">
-                        <i class="fas fa-calculator fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title fw-bold text-primary">Cotizaciones Personalizadas</h5>
-                        <p class="card-text text-muted">Obtén presupuestos ajustados a tus necesidades con nuestro equipo de expertos.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-lg text-center p-4">
-                        <i class="fas fa-truck fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title fw-bold text-primary">Entrega a Domicilio</h5>
-                        <p class="card-text text-muted">Recibe tus materiales donde y cuando los necesites con nuestro servicio de entrega.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-lg text-center p-4">
-                        <i class="fas fa-headset fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title fw-bold text-primary">Soporte Técnico</h5>
-                        <p class="card-text text-muted">Asesoría profesional para elegir los mejores materiales para tu proyecto.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contacto Profesional -->
-    <section id="contacto" class="py-5 bg-white">
-        <div class="container">
-            <h2 class="mb-4 text-primary fw-bold text-center border-bottom border-primary pb-2">Contáctanos</h2>
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <form>
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label text-primary">Nombre</label>
-                            <input type="text" class="form-control" id="nombre" placeholder="Tu nombre" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label text-primary">Email</label>
-                            <input type="email" class="form-control" id="email" placeholder="tu@email.com" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="mensaje" class="form-label text-primary">Mensaje</label>
-                            <textarea class="form-control" id="mensaje" rows="4" placeholder="Escribe tu mensaje" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary rounded-pill">Enviar</button>
-                    </form>
-                </div>
-                <div class="col-md-6">
-                    <h3 class="fw-bold text-primary">Ubicación</h3>
-                    <p class="text-muted">Calle Principal #123, Bogotá, Colombia</p>
-                    <div class="map-placeholder mb-4" style="height: 200px; background: #EDE4D3; border-radius: 10px;"></div>
-                    <p class="text-muted"><i class="fas fa-phone"></i> +57 300 123 4567</p>
-                    <p class="text-muted"><i class="fas fa-envelope"></i> info@construMax.com</p>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
+        {% endblock %}
+    </main>
 
     <!-- Footer -->
-    <footer class="footer bg-primary text-white py-4">
-        <div class="container text-center">
-            <p class="mb-2 fw-bold">&copy; 2025 ConstruMax - Todos los derechos reservados</p>
-            <div class="d-flex justify-content-center">
-                <a href="#" class="me-3 text-white text-decoration-none"><i class="fab fa-facebook-f"></i> Facebook</a>
-                <a href="#" class="me-3 text-white text-decoration-none"><i class="fab fa-instagram"></i> Instagram</a>
-                <a href="#" class="text-white text-decoration-none"><i class="fab fa-youtube"></i> YouTube</a>
+    <footer class="footer-professional">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="logo-professional me-3">
+                            <i class="fas fa-hard-hat"></i>
+                        </div>
+                        <h5 class="font-display mb-0">ConstruMax</h5>
+                    </div>
+                    <p class="text-muted">Materiales de construcción de calidad superior para profesionales y particulares.</p>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-3">Productos</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="small">Pegantes</a></li>
+                        <li><a href="#" class="small">Boquillas</a></li>
+                        <li><a href="#" class="small">Impermeabilizantes</a></li>
+                        <li><a href="#" class="small">Obra Gris</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-3">Servicios</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="small">Cotizaciones</a></li>
+                        <li><a href="#" class="small">Entrega</a></li>
+                        <li><a href="#" class="small">Asesoría</a></li>
+                        <li><a href="#" class="small">Soporte</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <h6 class="fw-bold mb-3">Contacto</h6>
+                    <p class="small mb-2">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        Calle Principal #123, Bogotá, Colombia
+                    </p>
+                    <p class="small mb-2">
+                        <i class="fas fa-phone me-2"></i>
+                        +57 300 123 4567
+                    </p>
+                    <p class="small mb-3">
+                        <i class="fas fa-envelope me-2"></i>
+                        info@construmax.com
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-decoration-none">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-decoration-none">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-decoration-none">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
+            
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="small mb-0">&copy; 2025 ConstruMax. Todos los derechos reservados.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="small mb-0">Diseñado con <i class="fas fa-heart text-danger"></i> para profesionales</p>
+                </div>
             </div>
         </div>
     </footer>
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
+    <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          {% if 'registro' in message.lower() or 'registration' in message.lower() %}
-            <div class="alert alert-success position-fixed bottom-0 start-50 translate-middle-x mb-4 shadow-sm" style="z-index: 1000;">{{ message }}</div>
-          {% endif %}
-        {% endfor %}
-      {% endif %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'success' if category == 'success' else 'info' }} alert-dismissible fade show position-fixed" 
+                     style="top: 100px; right: 20px; z-index: 1050; max-width: 400px;">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
     {% endwith %}
 
-    {% endblock %}
+    {% block scripts %}{% endblock %}
 </body>
 </html>

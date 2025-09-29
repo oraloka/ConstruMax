@@ -1,43 +1,299 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container py-5">
-    <h2 class="text-center mb-4 fw-bold text-primary">Catálogo de Productos</h2>
-    <form method="GET" class="row g-3 mb-4 justify-content-center">
-        <div class="col-md-4">
-            <input type="text" class="form-control" name="busqueda" placeholder="Buscar producto..." value="{{ request.args.get('busqueda', '') }}">
-        </div>
-        <div class="col-md-3">
-            <select class="form-select" name="categoria">
-                <option value="">Todas las categorías</option>
-                {% for cat in categorias %}
-                <option value="{{ cat }}" {% if request.args.get('categoria') == cat %}selected{% endif %}>{{ cat }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-warning w-100 fw-bold">Filtrar</button>
-        </div>
-    </form>
+<style>
+    :root {
+        --construction-orange: #FF6B35;
+        --concrete-gray: #8B8680;
+        --deep-black: #1A1A1A;
+        --light-beige: #F5F3F0;
+        --steel-gray: #4A4A4A;
+        --warm-white: #FEFEFE;
+    }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, var(--light-beige) 0%, #F0EDE8 100%);
+        color: var(--deep-black);
+    }
+    
+    .hero-section {
+        background: linear-gradient(135deg, var(--deep-black) 0%, var(--steel-gray) 100%);
+        color: var(--warm-white);
+        padding: 4rem 0;
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="concrete" patternUnits="userSpaceOnUse" width="100" height="100"><rect width="100" height="100" fill="%23000"/><circle cx="20" cy="20" r="1" fill="%23333" opacity="0.3"/><circle cx="80" cy="40" r="1.5" fill="%23333" opacity="0.2"/><circle cx="40" cy="80" r="1" fill="%23333" opacity="0.4"/></pattern></defs><rect width="100" height="100" fill="url(%23concrete)"/></svg>') repeat;
+        opacity: 0.1;
+    }
+    
+    .hero-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .search-section {
+        background: var(--warm-white);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-bottom: 3rem;
+        border: 1px solid rgba(139, 134, 128, 0.2);
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid rgba(139, 134, 128, 0.3);
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        background: var(--light-beige);
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: var(--construction-orange);
+        box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+        background: var(--warm-white);
+    }
+    
+    .btn-filter {
+        background: linear-gradient(135deg, var(--construction-orange) 0%, #E55A2B 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .btn-filter:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        background: linear-gradient(135deg, #E55A2B 0%, var(--construction-orange) 100%);
+    }
+    
+    .product-card {
+        background: var(--warm-white);
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        height: 100%;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    .product-image {
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+    
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+    
+    .product-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 600;
+        color: var(--deep-black);
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .product-description {
+        color: var(--steel-gray);
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+    
+    .category-badge {
+        background: linear-gradient(135deg, var(--concrete-gray) 0%, #9B9691 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 0.4rem 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .price-tag {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--construction-orange);
+        margin: 1rem 0;
+    }
+    
+    .stock-info {
+        color: #28a745;
+        font-weight: 600;
+    }
+    
+    .add-to-cart-btn {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        border-radius: 25px;
+        padding: 0.6rem 1.5rem;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+    
+    .add-to-cart-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+    }
+    
+    .quantity-input {
+        border-radius: 20px 0 0 20px !important;
+        border-right: none !important;
+        max-width: 80px;
+    }
+    
+    .no-products-alert {
+        background: linear-gradient(135deg, var(--light-beige) 0%, #F0EDE8 100%);
+        border: 2px dashed var(--concrete-gray);
+        border-radius: 20px;
+        padding: 3rem;
+        text-align: center;
+        color: var(--steel-gray);
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.6s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .product-info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .product-info-item i {
+        color: var(--construction-orange);
+        margin-right: 0.5rem;
+        width: 16px;
+    }
+</style>
+
+<div class="hero-section">
+    <div class="container text-center">
+        <h1 class="hero-title">
+            <i class="fas fa-tools me-3"></i>
+            Catálogo de Productos
+        </h1>
+        <p class="hero-subtitle">Encuentra los mejores materiales de construcción para tu proyecto</p>
+    </div>
+</div>
+
+<div class="container py-4">
+    <div class="search-section fade-in">
+        <form method="GET" class="row g-3 justify-content-center">
+            <div class="col-md-5">
+                <div class="position-relative">
+                    <i class="fas fa-search position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--concrete-gray);"></i>
+                    <input type="text" class="form-control ps-5" name="busqueda" 
+                           placeholder="Buscar producto..." 
+                           value="{{ request.args.get('busqueda', '') }}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="position-relative">
+                    <i class="fas fa-layer-group position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--concrete-gray);"></i>
+                    <select class="form-select ps-5" name="categoria">
+                        <option value="">Todas las categorías</option>
+                        {% for cat in categorias %}
+                        <option value="{{ cat }}" {% if request.args.get('categoria') == cat %}selected{% endif %}>
+                            {{ cat|title }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-filter w-100">
+                    <i class="fas fa-filter me-2"></i>Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+
     <div class="row g-4">
         {% set filtro = request.args.get('categoria') %}
         {% set busqueda = request.args.get('busqueda', '').lower() %}
         {% for producto in productos %}
             {% if (not filtro or producto.categoria == filtro) and (not busqueda or busqueda in producto.nombre.lower() or busqueda in producto.descripcion.lower()) %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card h-100 shadow-lg border-0 rounded-4">
-                    <img src="{{ producto.imagen or url_for('static', filename='img/arena_amarilla.jpg') }}" class="card-img-top rounded-top-4" alt="{{ producto.nombre }}">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 fade-in">
+                <div class="card product-card">
+                    <img src="{{ producto.imagen or url_for('static', filename='img/arena_amarilla.jpg') }}" 
+                         class="card-img-top product-image" alt="{{ producto.nombre }}">
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title fw-bold text-primary">{{ producto.nombre }}</h5>
-                        <p class="card-text text-muted">{{ producto.descripcion }}</p>
-                        <span class="badge bg-info mb-2">{{ producto.categoria }}</span>
-                        <p class="mb-1"><strong>Marca:</strong> {{ producto.marca or 'N/A' }}</p>
-                        <p class="mb-1"><strong>Presentación:</strong> {{ producto.presentacion or 'N/A' }}</p>
-                        <p class="mb-1"><strong>Stock:</strong> <span class="text-success">{{ producto.stock }}</span></p>
-                        <p class="mb-2 fs-5 fw-bold text-warning">{{ producto.precio|cop }}</p>
+                        <h5 class="product-title">{{ producto.nombre }}</h5>
+                        <p class="product-description">{{ producto.descripcion }}</p>
+                        <span class="category-badge mb-3">{{ producto.categoria }}</span>
+                        
+                        <div class="product-info-item">
+                            <i class="fas fa-industry"></i>
+                            <span><strong>Marca:</strong> {{ producto.marca or 'N/A' }}</span>
+                        </div>
+                        <div class="product-info-item">
+                            <i class="fas fa-box"></i>
+                            <span><strong>Presentación:</strong> {{ producto.presentacion or 'N/A' }}</span>
+                        </div>
+                        <div class="product-info-item">
+                            <i class="fas fa-warehouse"></i>
+                            <span><strong>Stock:</strong> <span class="stock-info">{{ producto.stock }}</span></span>
+                        </div>
+                        
+                        <div class="price-tag">{{ producto.precio|cop }}</div>
+                        
                         <form action="{{ url_for('cart.add_to_cart', product_id=producto.id) }}" method="post" class="mt-auto">
-                            <div class="input-group mb-2">
-                                <input type="number" name="quantity" value="1" min="1" max="{{ producto.stock }}" class="form-control form-control-sm rounded-start-pill" style="width:80px;">
-                                <button type="submit" class="btn btn-success rounded-end-pill"><i class="fas fa-cart-plus"></i> Agregar</button>
+                            <div class="input-group">
+                                <input type="number" name="quantity" value="1" min="1" max="{{ producto.stock }}" 
+                                       class="form-control quantity-input">
+                                <button type="submit" class="btn add-to-cart-btn">
+                                    <i class="fas fa-cart-plus me-2"></i>Agregar
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -46,9 +302,34 @@
             {% endif %}
         {% else %}
             <div class="col-12">
-                <div class="alert alert-info text-center">No hay productos disponibles.</div>
+                <div class="no-products-alert">
+                    <i class="fas fa-search fa-3x mb-3" style="color: var(--concrete-gray);"></i>
+                    <h4>No hay productos disponibles</h4>
+                    <p>Intenta ajustar tus filtros de búsqueda</p>
+                </div>
             </div>
         {% endfor %}
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animación de entrada para las tarjetas
+    const cards = document.querySelectorAll('.product-card');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+    });
+    
+    // Efecto hover mejorado
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+});
+</script>
 {% endblock %}

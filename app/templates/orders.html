@@ -1,57 +1,419 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container mt-4">
-    <h2>Mis Pedidos</h2>
-    {% if orders %}
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID Pedido</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-                <th>Productos</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for order in orders %}
-            <tr>
-                <td>{{ order.id }}</td>
-                <td>{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
-                <td>
-                    {% if order.status == 'aceptado' %}
-                        <span class="badge bg-info">Aceptado</span>
-                        <form action="{{ url_for('orders.generate_invoice', order_id=order.id) }}" method="post" target="_blank" style="display:inline;">
-                            <button type="submit" class="btn btn-warning btn-sm ms-2">Imprimir factura PDF</button>
-                        </form>
-                    {% elif order.status == 'en_camino' %}
-                        <span class="badge bg-warning">En camino</span>
-                    {% elif order.status == 'entregado' %}
-                        <span class="badge bg-success">Entregado</span>
-                    {% elif order.status == 'pendiente' %}
-                        <span class="badge bg-secondary">En espera</span>
-                        {% if current_user.role == 'admin' %}
-                        <form action="{{ url_for('orders.accept_order', order_id=order.id) }}" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-sm btn-primary ms-2">Aceptar pedido</button>
-                        </form>
-                        {% endif %}
-                    {% else %}
-                        <span class="badge bg-secondary">{{ order.status }}</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <ul>
-                    {% for item in order.items %}
-                        <li>{{ item.product_name }} (x{{ item.quantity }})</li>
-                    {% endfor %}
-                    </ul>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>No tienes pedidos realizados.</p>
-    {% endif %}
-    <a href="{{ url_for('auth.dashboard') }}" class="btn btn-secondary mt-4"><i class="fas fa-arrow-left"></i> Volver a la vista de usuario</a>
+<style>
+    /* Adding professional construction-themed styling */
+    :root {
+        --construction-orange: #FF6B35;
+        --construction-gray: #8B8680;
+        --construction-dark: #1A1A1A;
+        --construction-light: #F5F3F0;
+        --construction-accent: #D4AF37;
+        --concrete-texture: linear-gradient(135deg, #f5f3f0 0%, #e8e6e3 100%);
+    }
+
+    .orders-container {
+        background: var(--concrete-texture);
+        min-height: 100vh;
+        padding: 2rem 0;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .orders-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(26, 26, 26, 0.1);
+        border: none;
+        overflow: hidden;
+        animation: slideUp 0.6s ease-out;
+    }
+
+    .orders-header {
+        background: linear-gradient(135deg, var(--construction-dark) 0%, #2d2d2d 100%);
+        color: white;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .orders-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="construction" patternUnits="userSpaceOnUse" width="20" height="20"><rect width="20" height="20" fill="none"/><path d="M0 20L20 0M-5 5L5 -5M15 25L25 15" stroke="rgba(255,107,53,0.1)" stroke-width="2"/></pattern></defs><rect width="100" height="100" fill="url(%23construction)"/></svg>') repeat;
+        opacity: 0.3;
+    }
+
+    .orders-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .orders-title i {
+        color: var(--construction-orange);
+        font-size: 2rem;
+    }
+
+    .orders-body {
+        padding: 2rem;
+    }
+
+    .orders-table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: none;
+    }
+
+    .orders-table thead {
+        background: linear-gradient(135deg, var(--construction-gray) 0%, #9d9892 100%);
+    }
+
+    .orders-table thead th {
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1.5rem 1rem;
+        border: none;
+        font-size: 0.9rem;
+    }
+
+    .orders-table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .orders-table tbody tr:hover {
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(139, 134, 128, 0.05) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .orders-table tbody td {
+        padding: 1.5rem 1rem;
+        vertical-align: middle;
+        border: none;
+    }
+
+    .order-id {
+        font-weight: 700;
+        color: var(--construction-dark);
+        font-size: 1.1rem;
+    }
+
+    .order-date {
+        color: var(--construction-gray);
+        font-weight: 500;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: pulse 2s infinite;
+    }
+
+    .status-aceptado {
+        background: linear-gradient(135deg, var(--construction-orange) 0%, #e55a2b 100%);
+        color: white;
+    }
+
+    .status-en-camino {
+        background: linear-gradient(135deg, var(--construction-orange) 0%, #e55a2b 100%);
+        color: white;
+    }
+
+    .status-entregado {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        color: white;
+    }
+
+    .status-pendiente {
+        background: linear-gradient(135deg, var(--construction-gray) 0%, #6c757d 100%);
+        color: white;
+    }
+
+    .action-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        margin-left: 0.5rem;
+    }
+
+    .btn-pdf {
+        background: linear-gradient(135deg, var(--construction-accent) 0%, #b8941f 100%);
+        color: white;
+    }
+
+    .btn-pdf:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        color: white;
+    }
+
+    .btn-accept {
+        background: linear-gradient(135deg, var(--construction-orange) 0%, #e55a2b 100%);
+        color: white;
+    }
+
+    .btn-accept:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+        color: white;
+    }
+
+    .products-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .products-list li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .products-list li:last-child {
+        border-bottom: none;
+    }
+
+    .product-name {
+        font-weight: 600;
+        color: var(--construction-dark);
+    }
+
+    .product-quantity {
+        color: var(--construction-gray);
+        font-size: 0.9rem;
+        background: var(--construction-light);
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--construction-gray);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--construction-orange);
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--construction-dark);
+    }
+
+    .orders-footer {
+        background: var(--construction-light);
+        padding: 1.5rem 2rem;
+        border-top: 1px solid #e0e0e0;
+    }
+
+    .back-btn {
+        background: linear-gradient(135deg, var(--construction-gray) 0%, #6c757d 100%);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(139, 134, 128, 0.4);
+        color: white;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.8;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .orders-title {
+            font-size: 2rem;
+        }
+        
+        .orders-table {
+            font-size: 0.9rem;
+        }
+        
+        .orders-table thead th,
+        .orders-table tbody td {
+            padding: 1rem 0.5rem;
+        }
+        
+        .action-btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+    }
+</style>
+
+<div class="orders-container">
+    <div class="container">
+        <div class="orders-card">
+            <div class="orders-header">
+                <h1 class="orders-title">
+                    <i class="fas fa-clipboard-list"></i>
+                    Mis Pedidos
+                </h1>
+            </div>
+            
+            <div class="orders-body">
+                {% if orders %}
+                <div class="table-responsive">
+                    <table class="table orders-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    <i class="fas fa-hashtag me-2"></i>ID Pedido
+                                </th>
+                                <th scope="col">
+                                    <i class="fas fa-calendar me-2"></i>Fecha
+                                </th>
+                                <th scope="col">
+                                    <i class="fas fa-info-circle me-2"></i>Estado
+                                </th>
+                                <th scope="col">
+                                    <i class="fas fa-boxes me-2"></i>Productos
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>
+                                    <span class="order-id">#{{ order.id }}</span>
+                                </td>
+                                <td>
+                                    <span class="order-date">{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+                                </td>
+                                <td>
+                                    {% if order.status == 'aceptado' %}
+                                        <span class="status-badge status-aceptado">
+                                            <i class="fas fa-check-circle"></i>
+                                            Aceptado
+                                        </span>
+                                        <form action="{{ url_for('orders.generate_invoice', order_id=order.id) }}" method="post" target="_blank" style="display:inline;">
+                                            <button type="submit" class="action-btn btn-pdf">
+                                                <i class="fas fa-file-pdf"></i>
+                                                Factura PDF
+                                            </button>
+                                        </form>
+                                    {% elif order.status == 'en_camino' %}
+                                        <span class="status-badge status-en-camino">
+                                            <i class="fas fa-truck"></i>
+                                            En Camino
+                                        </span>
+                                    {% elif order.status == 'entregado' %}
+                                        <span class="status-badge status-entregado">
+                                            <i class="fas fa-check-double"></i>
+                                            Entregado
+                                        </span>
+                                    {% elif order.status == 'pendiente' %}
+                                        <span class="status-badge status-pendiente">
+                                            <i class="fas fa-clock"></i>
+                                            En Espera
+                                        </span>
+                                        {% if current_user.role == 'admin' %}
+                                        <form action="{{ url_for('orders.accept_order', order_id=order.id) }}" method="post" style="display:inline;">
+                                            <button type="submit" class="action-btn btn-accept">
+                                                <i class="fas fa-check"></i>
+                                                Aceptar
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="status-badge status-pendiente">
+                                            <i class="fas fa-question-circle"></i>
+                                            {{ order.status }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <ul class="products-list">
+                                    {% for item in order.items %}
+                                        <li>
+                                            <span class="product-name">{{ item.product_name }}</span>
+                                            <span class="product-quantity">x{{ item.quantity }}</span>
+                                        </li>
+                                    {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>No tienes pedidos realizados</h3>
+                    <p>Cuando realices tu primer pedido, aparecerá aquí con toda la información de seguimiento.</p>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="orders-footer">
+                <a href="{{ url_for('auth.dashboard') }}" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver al Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

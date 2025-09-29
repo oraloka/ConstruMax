@@ -1,58 +1,274 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-<div class="container mt-5">
-    <h2>Bienvenido, {{ current_user.nameUser }}!</h2>
-    <div class="mb-3 text-end">
-        <a href="{{ url_for('cart.view_cart') }}" class="btn btn-success">
-            <i class="fas fa-shopping-cart"></i> Ver carrito
-        </a>
+{% extends 'main.html' %}
+
+{% block title %}Dashboard - ConstruMax{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 24px 24px;
+    }
+
+    .search-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px var(--shadow-light);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .product-card {
+        background: white;
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px var(--shadow-light);
+        transition: all 0.4s ease;
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px var(--shadow-medium);
+    }
+
+    .product-image {
+        height: 200px;
+        object-fit: cover;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .price-badge {
+        background: linear-gradient(135deg, var(--construction-orange), var(--accent-color));
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        display: inline-block;
+        margin: 0.5rem 0;
+    }
+
+    .stock-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .stock-high {
+        background: rgba(34, 197, 94, 0.1);
+        color: #16a34a;
+    }
+
+    .stock-medium {
+        background: rgba(251, 191, 36, 0.1);
+        color: #d97706;
+    }
+
+    .stock-low {
+        background: rgba(239, 68, 68, 0.1);
+        color: #dc2626;
+    }
+
+    .quantity-input {
+        width: 80px;
+        border: 2px solid var(--accent-color);
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .add-to-cart-btn {
+        background: var(--construction-orange);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .add-to-cart-btn:hover {
+        background: #e55a2b;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        color: white;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .action-btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-cart {
+        background: var(--steel-blue);
+        color: white;
+    }
+
+    .btn-cart:hover {
+        background: #2d3748;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-profile {
+        background: var(--concrete-gray);
+        color: white;
+    }
+
+    .btn-profile:hover {
+        background: #6b6660;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-orders {
+        background: var(--accent-color);
+        color: var(--primary-color);
+    }
+
+    .btn-orders:hover {
+        background: #c19654;
+        color: var(--primary-color);
+        transform: translateY(-2px);
+    }
+
+    .btn-logout {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-logout:hover {
+        background: #b91c1c;
+        color: white;
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="font-display mb-2">¡Bienvenido, {{ current_user.nameUser }}!</h1>
+                <p class="mb-0 opacity-90">Explora nuestro catálogo de materiales de construcción</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="{{ url_for('cart.view_cart') }}" class="btn btn-professional">
+                    <i class="fas fa-shopping-cart me-2"></i>Ver Carrito
+                </a>
+            </div>
+        </div>
     </div>
-    <form method="GET" class="mb-4">
-        <div class="row">
+</div>
+
+<div class="container">
+    <!-- Search and Filter -->
+    <div class="search-card">
+        <form method="GET" class="row g-3">
             <div class="col-md-6">
-                <input type="text" class="form-control" name="busqueda" placeholder="Buscar producto..." value="{{ request.args.get('busqueda', '') }}">
+                <label class="form-label fw-semibold">
+                    <i class="fas fa-search me-2"></i>Buscar producto
+                </label>
+                <input type="text" class="form-control" name="busqueda" 
+                       placeholder="Nombre del producto..." 
+                       value="{{ request.args.get('busqueda', '') }}">
             </div>
             <div class="col-md-4">
-                <select class="form-control" name="categoria">
+                <label class="form-label fw-semibold">
+                    <i class="fas fa-filter me-2"></i>Categoría
+                </label>
+                <select class="form-select" name="categoria">
                     <option value="">Todas las categorías</option>
                     {% for cat in categorias %}
-                    <option value="{{ cat }}" {% if request.args.get('categoria') == cat %}selected{% endif %}>{{ cat }}</option>
+                    <option value="{{ cat }}" {% if request.args.get('categoria') == cat %}selected{% endif %}>
+                        {{ cat.title() }}
+                    </option>
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-professional w-100">
+                    <i class="fas fa-search me-2"></i>Filtrar
+                </button>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
+
+    <!-- Products Grid -->
     <div class="row g-4">
         {% set filtro = request.args.get('categoria') %}
         {% set busqueda = request.args.get('busqueda', '').lower() %}
         {% for producto in productos %}
             {% if (not filtro or producto.categoria == filtro) and (not busqueda or busqueda in producto.nombre.lower() or busqueda in producto.descripcion.lower()) %}
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <img src="{{ producto.imagen or 'https://via.placeholder.com/350x200?text=Producto' }}" class="card-img-top" alt="{{ producto.nombre }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ producto.nombre }}</h5>
-                        <p class="card-text">{{ producto.descripcion }}</p>
-                        <ul class="list-unstyled mb-2">
-                            <li><strong>Categoría:</strong> {{ producto.categoria }}</li>
-                            <li><strong>Presentación:</strong> {{ producto.presentacion or 'N/A' }}</li>
-                            <li><strong>Marca:</strong> {{ producto.marca or 'N/A' }}</li>
-                        </ul>
-                        <p class="card-text"><strong>Precio:</strong> {{ producto.precio|cop }}</p>
-                        <p class="card-text"><strong>Stock disponible:</strong> {{ producto.stock }}</p>
-                        <form action="{{ url_for('cart.add_to_cart', product_id=producto.id) }}" method="post" style="display:inline;">
-                            <input type="number" name="quantity" value="1" min="1" max="{{ producto.stock }}" class="form-control form-control-sm d-inline-block" style="width:80px;">
-                            <button type="submit" class="btn btn-success mt-2 rounded-pill"><i class="fas fa-cart-plus"></i> Agregar al carrito</button>
+            <div class="col-lg-4 col-md-6">
+                <div class="product-card">
+                    <img src="{{ producto.imagen or 'https://via.placeholder.com/350x200?text=Producto&bg=8B7355&color=ffffff' }}" 
+                         class="card-img-top product-image" alt="{{ producto.nombre }}">
+                    
+                    <div class="card-body p-4">
+                        <h5 class="font-display fw-bold mb-3">{{ producto.nombre }}</h5>
+                        <p class="text-muted mb-3">{{ producto.descripcion[:100] }}{% if producto.descripcion|length > 100 %}...{% endif %}</p>
+                        
+                        <div class="mb-3">
+                            <div class="row g-2 small">
+                                <div class="col-6">
+                                    <strong>Categoría:</strong><br>
+                                    <span class="text-muted">{{ producto.categoria.title() }}</span>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Marca:</strong><br>
+                                    <span class="text-muted">{{ producto.marca or 'N/A' }}</span>
+                                </div>
+                                <div class="col-12 mt-2">
+                                    <strong>Presentación:</strong><br>
+                                    <span class="text-muted">{{ producto.presentacion or 'N/A' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="price-badge mb-3">
+                            <i class="fas fa-tag me-2"></i>{{ producto.precio|cop }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <span class="stock-indicator {% if producto.stock > 10 %}stock-high{% elif producto.stock > 5 %}stock-medium{% else %}stock-low{% endif %}">
+                                <i class="fas fa-boxes"></i>
+                                {{ producto.stock }} disponibles
+                            </span>
+                        </div>
+                        
+                        <form action="{{ url_for('cart.add_to_cart', product_id=producto.id) }}" method="post">
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <label class="form-label mb-0 fw-semibold">Cantidad:</label>
+                                <input type="number" name="quantity" value="1" min="1" max="{{ producto.stock }}" 
+                                       class="form-control quantity-input">
+                            </div>
+                            <button type="submit" class="add-to-cart-btn">
+                                <i class="fas fa-cart-plus me-2"></i>Agregar al Carrito
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -60,13 +276,29 @@
             {% endif %}
         {% else %}
             <div class="col-12">
-                <div class="alert alert-info text-center">No hay productos disponibles.</div>
+                <div class="text-center py-5">
+                    <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                    <h4 class="text-muted">No hay productos disponibles</h4>
+                    <p class="text-muted">Intenta con otros filtros de búsqueda</p>
+                </div>
             </div>
         {% endfor %}
     </div>
-    <a href="{{ url_for('auth.profile') }}" class="btn btn-secondary mt-4">Mi perfil</a>
-    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger mt-4 ms-2">Logout</a>
-    <a href="{{ url_for('orders.view_orders') }}" class="btn btn-info mt-3 ms-2"><i class="fas fa-list"></i> Ver mis pedidos</a>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <a href="{{ url_for('cart.view_cart') }}" class="action-btn btn-cart">
+            <i class="fas fa-shopping-cart"></i>Ver Carrito
+        </a>
+        <a href="{{ url_for('auth.profile') }}" class="action-btn btn-profile">
+            <i class="fas fa-user"></i>Mi Perfil
+        </a>
+        <a href="{{ url_for('orders.view_orders') }}" class="action-btn btn-orders">
+            <i class="fas fa-list"></i>Mis Pedidos
+        </a>
+        <a href="{{ url_for('auth.logout') }}" class="action-btn btn-logout">
+            <i class="fas fa-sign-out-alt"></i>Cerrar Sesión
+        </a>
+    </div>
 </div>
-</body>
-</html>
+{% endblock %}

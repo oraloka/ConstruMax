@@ -3,39 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}ConstruMax{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pegantes.css') }}">
+    <title>{% block title %}ConstruMax - Materiales de Construcción{% endblock %}</title>
+    
+    <!-- Added professional fonts and improved meta tags -->
+    <meta name="description" content="ConstruMax - Tu tienda de confianza para materiales de construcción de calidad">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Added custom CSS files for professional styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/construmax-base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/construmax-components.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-override.css') }}">
+    
+    <style>
+        :root {
+            --construction-orange: #ff6b35;
+            --construction-orange-dark: #e55a2b;
+            --concrete-gray: #8b8680;
+            --concrete-light: #a8a29e;
+            --steel-dark: #1a1a1a;
+            --steel-gray: #374151;
+            --concrete-bg: #f5f3f0;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--concrete-bg);
+            color: var(--steel-dark);
+            line-height: 1.6;
+        }
+
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--steel-dark) 0%, var(--steel-gray) 100%);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 2rem;
+            color: var(--construction-orange) !important;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-brand:hover {
+            color: var(--construction-orange-dark) !important;
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--white) !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            background-color: var(--construction-orange);
+            color: var(--white) !important;
+            transform: translateY(-2px);
+        }
+
+        .navbar-toggler {
+            border: 2px solid var(--construction-orange);
+            padding: 0.5rem;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23ff6b35' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .footer-custom {
+            background: linear-gradient(135deg, var(--steel-dark) 0%, var(--steel-gray) 100%);
+            color: var(--white);
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h5 {
+            font-family: 'Playfair Display', serif;
+            color: var(--construction-orange);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .footer-section p, .footer-section a {
+            color: var(--concrete-light);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .footer-section a:hover {
+            color: var(--construction-orange);
+            transition: color 0.3s ease;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--steel-gray);
+            padding-top: 1.5rem;
+            text-align: center;
+            color: var(--concrete-light);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: var(--construction-orange);
+            color: var(--white);
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            background-color: var(--construction-orange-dark);
+            transform: translateY(-3px);
+        }
+
+        .main-content {
+            min-height: calc(100vh - 200px);
+            padding: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .social-icons {
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <!-- Completely redesigned navbar with professional styling -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('main') }}">ConstruMax</a>
+            <a class="navbar-brand" href="{{ url_for('main') }}">
+                <i class="fas fa-hard-hat"></i>
+                ConstruMax
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('main') }}">Inicio</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main') }}">
+                            <i class="fas fa-home me-1"></i>Inicio
+                        </a>
+                    </li>
                     {% if current_user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.profile') }}">Mi perfil</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Cerrar sesión</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.profile') }}">
+                                <i class="fas fa-user me-1"></i>Mi Perfil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.logout') }}">
+                                <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
+                            </a>
+                        </li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Iniciar sesión</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('register.register') }}">Registrarse</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.login') }}">
+                                <i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register.register') }}">
+                                <i class="fas fa-user-plus me-1"></i>Registrarse
+                            </a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
-    {% block content %}{% endblock %}
-    <footer class="footer mt-5">
+
+    <!-- Added main content wrapper for better spacing -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Completely redesigned footer with professional styling and additional information -->
+    <footer class="footer-custom">
         <div class="container">
-            <span>© 2025 ConstruMax. Todos los derechos reservados.</span>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h5><i class="fas fa-hard-hat me-2"></i>ConstruMax</h5>
+                    <p>Tu tienda de confianza para materiales de construcción de la más alta calidad. Construyendo el futuro juntos.</p>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h5><i class="fas fa-tools me-2"></i>Productos</h5>
+                    <a href="#">Obra Gris</a>
+                    <a href="#">Pegantes</a>
+                    <a href="#">Impermeabilizantes</a>
+                    <a href="#">Boquillas</a>
+                    <a href="#">Herramientas</a>
+                </div>
+                <div class="footer-section">
+                    <h5><i class="fas fa-info-circle me-2"></i>Información</h5>
+                    <a href="#">Sobre Nosotros</a>
+                    <a href="#">Términos y Condiciones</a>
+                    <a href="#">Política de Privacidad</a>
+                    <a href="#">Preguntas Frecuentes</a>
+                </div>
+                <div class="footer-section">
+                    <h5><i class="fas fa-phone me-2"></i>Contacto</h5>
+                    <p><i class="fas fa-map-marker-alt me-2"></i>Calle Principal #123, Ciudad</p>
+                    <p><i class="fas fa-phone me-2"></i>+57 300 123 4567</p>
+                    <p><i class="fas fa-envelope me-2"></i>info@construmax.com</p>
+                    <p><i class="fas fa-clock me-2"></i>Lun - Sáb: 8:00 AM - 6:00 PM</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ConstruMax. Todos los derechos reservados. | Diseñado con <i class="fas fa-heart" style="color: var(--construction-orange);"></i> para constructores</p>
+            </div>
         </div>
     </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

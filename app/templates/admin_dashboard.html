@@ -1,262 +1,879 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta name="description" content="Panel de Administración - ConstructoPro">
+    <title>ConstructoPro - Panel de Administración</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Complete dashboard redesign with industrial aesthetic */
+        :root {
+            --concrete-light: #F5F3F0;
+            --concrete-medium: #8B8680;
+            --concrete-dark: #1A1A1A;
+            --construction-orange: #FF6B35;
+            --construction-red: #E74C3C;
+            --steel-gray: #4A5568;
+            --warm-white: #FEFEFE;
+            --success-green: #27AE60;
+            --warning-yellow: #F39C12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--concrete-light);
+            color: var(--concrete-dark);
+            line-height: 1.6;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .admin-sidebar {
+            width: 280px;
+            background: var(--concrete-dark);
+            color: var(--warm-white);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 32px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-construction {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--construction-orange), var(--construction-red));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--warm-white);
+        }
+
+        .logo-subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 24px 0;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 24px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--warm-white);
+            border-left-color: var(--construction-orange);
+        }
+
+        .nav-link.active {
+            background: rgba(255, 107, 53, 0.1);
+            color: var(--construction-orange);
+            border-left-color: var(--construction-orange);
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .admin-main {
+            flex: 1;
+            margin-left: 280px;
+            padding: 32px;
+            background: var(--concrete-light);
+        }
+
+        .admin-header {
+            margin-bottom: 40px;
+        }
+
+        .admin-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 600;
+            color: var(--concrete-dark);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .admin-subtitle {
+            font-size: 18px;
+            color: var(--concrete-medium);
+            font-weight: 400;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--warm-white);
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--construction-orange), var(--construction-red));
+        }
+
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--concrete-dark);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--concrete-medium);
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-label i {
+            color: var(--construction-orange);
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .section-card {
+            background: var(--warm-white);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .section-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--concrete-dark);
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--concrete-light);
+        }
+
+        .section-header i {
+            color: var(--construction-orange);
+        }
+
+        /* Forms */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .form-group-professional {
+            margin-bottom: 24px;
+        }
+
+        .form-label-professional {
+            display: block;
+            font-weight: 600;
+            color: var(--concrete-dark);
+            margin-bottom: 8px;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+        }
+
+        .form-control-professional {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--warm-white);
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-control-professional:focus {
+            outline: none;
+            border-color: var(--construction-orange);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        /* Tables */
+        .table-professional {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--warm-white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .table-professional thead {
+            background: var(--concrete-dark);
+            color: var(--warm-white);
+        }
+
+        .table-professional th,
+        .table-professional td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .table-professional th {
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table-professional tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table-professional tbody tr:hover {
+            background: rgba(255, 107, 53, 0.02);
+            transform: scale(1.01);
+        }
+
+        /* Buttons */
+        .btn-professional {
+            padding: 16px 24px;
+            background: linear-gradient(135deg, var(--construction-orange), var(--construction-red));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-professional:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-sm-professional {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 8px;
+        }
+
+        .btn-secondary-professional {
+            background: var(--steel-gray);
+        }
+
+        .btn-warning-professional {
+            background: var(--warning-yellow);
+        }
+
+        .btn-danger-professional {
+            background: var(--construction-red);
+        }
+
+        .btn-success-professional {
+            background: var(--success-green);
+        }
+
+        /* Status badges */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning-yellow);
+        }
+
+        .status-accepted {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--success-green);
+        }
+
+        .status-delivered {
+            background: rgba(255, 107, 53, 0.1);
+            color: var(--construction-orange);
+        }
+
+        /* Alerts */
+        .alert-professional {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+
+        .alert-warning {
+            background: rgba(243, 156, 18, 0.1);
+            border: 1px solid rgba(243, 156, 18, 0.2);
+            color: var(--warning-yellow);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+            }
+
+            .admin-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .admin-main {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-title {
+                font-size: 32px;
+            }
+        }
+    </style>
 </head>
-<body>
-<div class="container mt-5">
-    {% if mensaje_desbloqueo %}
-    <div class="alert alert-warning" role="alert">
-        {{ mensaje_desbloqueo }}
-    </div>
-    {% endif %}
-    <div class="d-flex">
-        <!-- Sidebar -->
-        <nav class="bg-light border-end" id="sidebar" style="width: 250px; min-height: 100vh;">
-            <div class="sidebar-header p-4">
-                <h4>Panel Admin</h4>
-            </div>
-            <ul class="nav flex-column">
-                <li class="nav-item"><a class="nav-link" href="#productos" onclick="showSection('productos')">Productos</a></li>
-                <li class="nav-item"><a class="nav-link" href="#destacados" onclick="showSection('destacados')">Destacados</a></li>
-                <li class="nav-item"><a class="nav-link" href="#usuarios" onclick="showSection('usuarios')">Usuarios</a></li>
-                <li class="nav-item"><a class="nav-link" href="#agregar" onclick="showSection('agregar')">Agregar producto</a></li>
-                <li class="nav-item"><a class="nav-link" href="#admin_info" onclick="showSection('admin_info')">Mi información</a></li>
-                <li class="nav-item"><a class="nav-link" href="#pedidos" onclick="showSection('pedidos')">Pedidos</a></li>
-                <li class="nav-item"><a class="nav-link text-danger" href="{{ url_for('auth.logout') }}">Cerrar sesión</a></li>
-            <!-- ...sidebar code... -->
-            </ul>
-        </nav>
-        <!-- Main content -->
-    <div class="flex-grow-1 p-4" style="min-width:0;">
-        <div id="admin_info" class="section" style="display:none;">
-            <div class="card mb-5">
-                <div class="card-header bg-dark text-white">Mi información de administrador</div>
-                <div class="card-body">
-                        <form action="{{ url_for('auth.admin_profile') }}" method="POST" enctype="multipart/form-data">
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="nameUser">Nombre</label>
-                                <input type="text" class="form-control" id="nameUser" name="nameUser" value="{{ current_user.nameUser }}" required>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="apellidoUser">Apellido</label>
-                                <input type="text" class="form-control" id="apellidoUser" name="apellidoUser" value="{{ current_user.apellidoUser }}" required>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="telefonoUser">Teléfono</label>
-                                <input type="text" class="form-control" id="telefonoUser" name="telefonoUser" value="{{ current_user.telefonoUser }}" required>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="email">Correo electrónico</label>
-                                <input type="email" class="form-control" id="email" name="email" value="{{ current_user.email }}" required>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-12">
-                                <label for="direccionUser">Dirección</label>
-                                <input type="text" class="form-control" id="direccionUser" name="direccionUser" value="{{ current_user.direccionUser }}" required>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="foto_perfil">Foto de perfil</label>
-                                <input type="file" class="form-control-file" id="foto_perfil" name="foto_perfil">
-                                {% if current_user.foto_perfil %}
-                                    <img src="{{ current_user.foto_perfil }}" alt="Foto de perfil" class="img-thumbnail mt-2" style="max-width:120px;">
-                                {% endif %}
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="passwordUser">Nueva contraseña</label>
-                                <input type="password" class="form-control" id="passwordUser" name="passwordUser" placeholder="Nueva contraseña">
-                                <label for="passwordUserConfirm" class="mt-2">Confirmar contraseña</label>
-                                <input type="password" class="form-control" id="passwordUserConfirm" name="passwordUserConfirm" placeholder="Confirmar contraseña">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Actualizar información</button>
-                        <a href="{{ url_for('auth.dashboard') }}" class="btn btn-secondary ml-2">Volver al panel</a>
-                    </form>
+<body class="admin-container">
+    <!-- Enhanced sidebar with professional construction branding -->
+    <nav class="admin-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-construction">
+                <div class="logo-icon">
+                    <i class="fas fa-hard-hat"></i>
+                </div>
+                <div>
+                    <div class="logo-text">ConstructoPro</div>
+                    <div class="logo-subtitle">Panel Admin</div>
                 </div>
             </div>
         </div>
-            <div id="productos" class="section">
-                <!-- Gestión de edición de productos -->
-                <div class="card mb-5">
-                    <div class="card-header bg-info text-white">Editar productos disponibles</div>
-                    <div class="card-body">
-                        <h5>Lista de productos</h5>
-                        <table class="table table-bordered table-hover">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nombre</th>
-                                    <th>Categoría</th>
-                                    <th>Precio</th>
-                                    <th>Marca</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for producto in productos %}
-                                <tr>
-                                    <td>{{ producto.id }}</td>
-                                    <td>{{ producto.nombre }}</td>
-                                    <td>{{ producto.categoria }}</td>
-                                    <td>{{ producto.precio|cop }}</td>
-                                    <td>{{ producto.marca or 'N/A' }}</td>
-                                    <td>
-                                        <a href="{{ url_for('productos.editar_producto', id=producto.id) }}" class="btn btn-warning btn-sm">Editar</a>
-                                        <a href="{{ url_for('productos.eliminar_producto', id=producto.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este producto?');">Eliminar</a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+        
+        <ul class="sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link active" href="#productos" onclick="showSection('productos')">
+                    <i class="fas fa-boxes"></i> Productos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#destacados" onclick="showSection('destacados')">
+                    <i class="fas fa-star"></i> Destacados
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#usuarios" onclick="showSection('usuarios')">
+                    <i class="fas fa-users"></i> Usuarios
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#agregar" onclick="showSection('agregar')">
+                    <i class="fas fa-plus-circle"></i> Agregar Producto
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#admin_info" onclick="showSection('admin_info')">
+                    <i class="fas fa-user-cog"></i> Mi Información
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#pedidos" onclick="showSection('pedidos')">
+                    <i class="fas fa-shopping-cart"></i> Pedidos
+                </a>
+            </li>
+            <li class="nav-item" style="margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px;">
+                <a class="nav-link" href="{{ url_for('auth.logout') }}" style="color: var(--construction-red);">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="admin-main">
+        <!-- Enhanced header with professional typography -->
+        <div class="admin-header">
+            <h1 class="admin-title">
+                Panel de Administración
+            </h1>
+            <p class="admin-subtitle">Gestiona tu tienda de materiales de construcción</p>
+        </div>
+
+        <!-- Alert messages -->
+        {% if mensaje_desbloqueo %}
+        <div class="alert-professional alert-warning" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            {{ mensaje_desbloqueo }}
+        </div>
+        {% endif %}
+
+        <!-- Stats overview -->
+        <div class="stats-grid">
+            <div class="stat-card animate-fade-in">
+                <div class="stat-number">{{ productos|length if productos else 0 }}</div>
+                <div class="stat-label">
+                    <i class="fas fa-boxes"></i> Productos Totales
                 </div>
             </div>
-            <div id="destacados" class="section" style="display:none;">
-                <!-- Gestión de productos destacados -->
-                <div class="card mb-5">
-                    <div class="card-header bg-primary text-white">Productos destacados</div>
-                    <div class="card-body">
-                        <form action="{{ url_for('productos.destacados') }}" method="POST" class="mb-4">
-                            <h5>Seleccionar productos destacados</h5>
-                            <p class="text-muted">Selecciona los productos que aparecerán como destacados en la página principal.</p>
-                            <div class="form-group">
-                                <label for="destacados">Productos disponibles:</label>
-                                <select multiple class="form-control" id="destacados" name="destacados">
-                                    {% for producto in productos %}
-                                    <option value="{{ producto.id }}" {% if producto.destacado %}selected{% endif %}>{{ producto.nombre }}</option>
-                                    {% endfor %}
-                                </select>
-                                <small class="form-text text-muted">Mantén presionada Ctrl (Windows) o Cmd (Mac) para seleccionar varios.</small>
-                            </div>
-                            <button type="submit" class="btn btn-success mt-2">Guardar destacados</button>
-                        </form>
-                    </div>
+            <div class="stat-card animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="stat-number">{{ usuarios|length if usuarios else 0 }}</div>
+                <div class="stat-label">
+                    <i class="fas fa-users"></i> Usuarios Registrados
                 </div>
             </div>
-            <div id="usuarios" class="section" style="display:none;">
-                <!-- Gestión de usuarios -->
-                <div class="card mb-5">
-                    <div class="card-header bg-secondary text-white">Gestión de usuarios</div>
-                    <div class="card-body">
-                        <h5>Lista de usuarios</h5>
-                        <table class="table table-bordered table-hover">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nombre</th>
-                                    <th>Rol</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for usuario in usuarios %}
-                                {% if usuario.role != 'admin' %}
-                                <tr>
-                                    <td>{{ usuario.idUser }}</td>
-                                    <td>{{ usuario.nameUser }}</td>
-                                    <td>{{ usuario.role }}</td>
-                                    <td>{{ 'Bloqueado' if usuario.bloqueado else 'Activo' }}</td>
-                                    <td>
-                                        <a href="{{ url_for('productos.editar_usuario', id=usuario.idUser) }}" class="btn btn-warning btn-sm">Editar</a>
-                                        <a href="{{ url_for('productos.eliminar_usuario', id=usuario.idUser) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este usuario?');">Eliminar</a>
-                                        {% if usuario.bloqueado %}
-                                            <a href="{{ url_for('productos.desbloquear_usuario', id=usuario.idUser) }}" class="btn btn-success btn-sm">Desbloquear</a>
-                                        {% else %}
-                                            <a href="{{ url_for('productos.bloquear_usuario', id=usuario.idUser) }}" class="btn btn-secondary btn-sm">Bloquear</a>
-                                        {% endif %}
-                                    </td>
-                                </tr>
+            <div class="stat-card animate-fade-in" style="animation-delay: 0.2s;">
+                <div class="stat-number">{{ pedidos|length if pedidos else 0 }}</div>
+                <div class="stat-label">
+                    <i class="fas fa-shopping-cart"></i> Pedidos Pendientes
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Info Section -->
+        <div id="admin_info" class="section" style="display:none;">
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="fas fa-user-cog"></i> Mi Información de Administrador
+                </div>
+                <form action="{{ url_for('auth.admin_profile') }}" method="POST" enctype="multipart/form-data">
+                    <div class="form-row">
+                        <div class="form-group-professional">
+                            <label for="nameUser" class="form-label-professional">Nombre</label>
+                            <input type="text" class="form-control-professional" id="nameUser" name="nameUser" value="{{ current_user.nameUser }}" required>
+                        </div>
+                        <div class="form-group-professional">
+                            <label for="apellidoUser" class="form-label-professional">Apellido</label>
+                            <input type="text" class="form-control-professional" id="apellidoUser" name="apellidoUser" value="{{ current_user.apellidoUser }}" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group-professional">
+                            <label for="telefonoUser" class="form-label-professional">Teléfono</label>
+                            <input type="text" class="form-control-professional" id="telefonoUser" name="telefonoUser" value="{{ current_user.telefonoUser }}" required>
+                        </div>
+                        <div class="form-group-professional">
+                            <label for="email" class="form-label-professional">Correo electrónico</label>
+                            <input type="email" class="form-control-professional" id="email" name="email" value="{{ current_user.email }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group-professional">
+                        <label for="direccionUser" class="form-label-professional">Dirección</label>
+                        <input type="text" class="form-control-professional" id="direccionUser" name="direccionUser" value="{{ current_user.direccionUser }}" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group-professional">
+                            <label for="foto_perfil" class="form-label-professional">Foto de perfil</label>
+                            <input type="file" class="form-control-professional" id="foto_perfil" name="foto_perfil">
+                            {% if current_user.foto_perfil %}
+                                <img src="{{ current_user.foto_perfil }}" alt="Foto de perfil" class="img-thumbnail mt-2" style="max-width:120px; border-radius: 8px;">
+                            {% endif %}
+                        </div>
+                        <div class="form-group-professional">
+                            <label for="passwordUser" class="form-label-professional">Nueva contraseña</label>
+                            <input type="password" class="form-control-professional" id="passwordUser" name="passwordUser" placeholder="Nueva contraseña">
+                            <label for="passwordUserConfirm" class="form-label-professional" style="margin-top: 16px;">Confirmar contraseña</label>
+                            <input type="password" class="form-control-professional" id="passwordUserConfirm" name="passwordUserConfirm" placeholder="Confirmar contraseña">
+                        </div>
+                    </div>
+                    <div style="margin-top: 32px;">
+                        <button type="submit" class="btn-professional">
+                            <i class="fas fa-save"></i> Actualizar Información
+                        </button>
+                        <a href="{{ url_for('auth.dashboard') }}" class="btn-professional btn-secondary-professional" style="margin-left: 16px;">
+                            <i class="fas fa-arrow-left"></i> Volver al Panel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <div id="productos" class="section">
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="fas fa-boxes"></i> Gestión de Productos
+                </div>
+                <table class="table-professional">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th>Marca</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for producto in productos %}
+                        <tr>
+                            <td><strong>#{{ producto.id }}</strong></td>
+                            <td>{{ producto.nombre }}</td>
+                            <td><span class="status-badge status-pending">{{ producto.categoria }}</span></td>
+                            <td><strong>{{ producto.precio|cop }}</strong></td>
+                            <td>{{ producto.marca or 'N/A' }}</td>
+                            <td>
+                                <a href="{{ url_for('productos.editar_producto', id=producto.id) }}" class="btn-sm-professional btn-warning-professional">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <a href="{{ url_for('productos.eliminar_producto', id=producto.id) }}" class="btn-sm-professional btn-danger-professional" onclick="return confirm('¿Seguro que deseas eliminar este producto?');">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Featured Products Section -->
+        <div id="destacados" class="section" style="display:none;">
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="fas fa-star"></i> Productos Destacados
+                </div>
+                <form action="{{ url_for('productos.destacados') }}" method="POST">
+                    <div class="form-group-professional">
+                        <label for="destacados" class="form-label-professional">Productos disponibles:</label>
+                        <select multiple class="form-control-professional" id="destacados" name="destacados" style="min-height: 200px;">
+                            {% for producto in productos %}
+                            <option value="{{ producto.id }}" {% if producto.destacado %}selected{% endif %}>
+                                {{ producto.nombre }} - {{ producto.precio|cop }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <small style="color: var(--text-secondary); margin-top: 8px; display: block;">
+                            <i class="fas fa-info-circle"></i> Mantén presionada Ctrl (Windows) o Cmd (Mac) para seleccionar varios.
+                        </small>
+                    </div>
+                    <button type="submit" class="btn-professional">
+                        <i class="fas fa-save"></i> Guardar Destacados
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div id="usuarios" class="section" style="display:none;">
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="fas fa-users"></i> Gestión de Usuarios
+                </div>
+                <table class="table-professional">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for usuario in usuarios %}
+                        {% if usuario.role != 'admin' %}
+                        <tr>
+                            <td><strong>#{{ usuario.idUser }}</strong></td>
+                            <td>{{ usuario.nameUser }}</td>
+                            <td><span class="status-badge status-accepted">{{ usuario.role }}</span></td>
+                            <td>
+                                {% if usuario.bloqueado %}
+                                    <span class="status-badge status-pending">Bloqueado</span>
+                                {% else %}
+                                    <span class="status-badge status-delivered">Activo</span>
                                 {% endif %}
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('productos.editar_usuario', id=usuario.idUser) }}" class="btn-sm-professional btn-warning-professional">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <a href="{{ url_for('productos.eliminar_usuario', id=usuario.idUser) }}" class="btn-sm-professional btn-danger-professional" onclick="return confirm('¿Seguro que deseas eliminar este usuario?');">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </a>
+                                {% if usuario.bloqueado %}
+                                    <a href="{{ url_for('productos.desbloquear_usuario', id=usuario.idUser) }}" class="btn-sm-professional btn-success-professional">
+                                        <i class="fas fa-unlock"></i> Desbloquear
+                                    </a>
+                                {% else %}
+                                    <a href="{{ url_for('productos.bloquear_usuario', id=usuario.idUser) }}" class="btn-sm-professional" style="background: var(--text-secondary); color: white;">
+                                        <i class="fas fa-lock"></i> Bloquear
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            <div id="agregar" class="section" style="display:none;">
-                <!-- Gestión de productos: usar el formulario mejorado -->
+        </div>
+
+        <!-- Add Product Section -->
+        <div id="agregar" class="section" style="display:none;">
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="fas fa-plus-circle"></i> Agregar Nuevo Producto
+                </div>
                 {% set categorias = categorias %}
                 {% include 'productos/agregar.html' %}
             </div>
-            <div id="pedidos" class="section" style="display:none;">
-                <div class="card mb-5">
-                    <div class="card-header bg-success text-white">Pedidos pendientes</div>
-                    <div class="card-body">
-                        <h5>Lista de pedidos</h5>
-                        <table class="table table-bordered table-hover">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>ID Pedido</th>
-                                    <th>Usuario</th>
-                                    <th>Fecha</th>
-                                    <th>Estado</th>
-                                    <th>Productos</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for pedido in pedidos %}
-                                <tr>
-                                    <td>{{ pedido.id }}</td>
-                                    <td>{{ pedido.user_id }}</td>
-                                    <td>{{ pedido.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
-                                    <td>
-                                        {% if pedido.status == 'aceptado' %}
-                                            <span class="badge bg-info">Aceptado</span>
-                                        {% elif pedido.status == 'en_camino' %}
-                                            <span class="badge bg-warning">En camino</span>
-                                        {% elif pedido.status == 'entregado' %}
-                                            <span class="badge bg-success">Entregado</span>
-                                        {% elif pedido.status == 'pendiente' %}
-                                            <span class="badge bg-secondary">En espera</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary">{{ pedido.status }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <ul>
-                                        {% for item in pedido.items %}
-                                            <li>{{ item.product_name }} (x{{ item.quantity }})</li>
-                                        {% endfor %}
-                                        </ul>
-                                    </td>
-                                    <td>
-                                        {% if pedido.status == 'pendiente' %}
-                                        <form action="{{ url_for('orders.accept_order', order_id=pedido.id) }}" method="post" style="display:inline;">
-                                            <button type="submit" class="btn btn-sm btn-primary">Aceptar</button>
-                                        </form>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="pedidos" class="section" style="display:none;">
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="fas fa-shopping-cart"></i> Gestión de Pedidos
                 </div>
+                <table class="table-professional">
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th>Usuario</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Productos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pedido in pedidos %}
+                        <tr>
+                            <td><strong>#{{ pedido.id }}</strong></td>
+                            <td>{{ pedido.user_id }}</td>
+                            <td>{{ pedido.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                            <td>
+                                {% if pedido.status == 'aceptado' %}
+                                    <span class="status-badge status-accepted">Aceptado</span>
+                                {% elif pedido.status == 'en_camino' %}
+                                    <span class="status-badge status-pending">En camino</span>
+                                {% elif pedido.status == 'entregado' %}
+                                    <span class="status-badge status-delivered">Entregado</span>
+                                {% elif pedido.status == 'pendiente' %}
+                                    <span class="status-badge status-pending">En espera</span>
+                                {% else %}
+                                    <span class="status-badge status-pending">{{ pedido.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <ul style="margin: 0; padding-left: 20px;">
+                                {% for item in pedido.items %}
+                                    <li>{{ item.product_name }} (x{{ item.quantity }})</li>
+                                {% endfor %}
+                                </ul>
+                            </td>
+                            <td>
+                                {% if pedido.status == 'pendiente' %}
+                                <form action="{{ url_for('orders.accept_order', order_id=pedido.id) }}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn-sm-professional btn-success-professional">
+                                        <i class="fas fa-check"></i> Aceptar
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</div>
-</script>
-<script>
-function showSection(section) {
-    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-    document.getElementById(section).style.display = 'block';
-}
-// Mostrar la sección de productos por defecto al cargar
-window.addEventListener('DOMContentLoaded', function() {
-    showSection('productos');
-});
-</script>
+
+    <script>
+        // Section navigation
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(section).style.display = 'block';
+            
+            // Add active class to clicked nav link
+            document.querySelector(`[href="#${section}"]`).classList.add('active');
+            
+            // Add animation
+            document.getElementById(section).style.animation = 'fadeInUp 0.6s ease-out';
+        }
+
+        // Show products section by default
+        window.addEventListener('DOMContentLoaded', function() {
+            showSection('productos');
+        });
+
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Add loading states to forms
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+                    submitBtn.disabled = true;
+                    
+                    // Re-enable after 3 seconds in case of error
+                    setTimeout(() => {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }, 3000);
+                }
+            });
+        });
+
+        // Add hover effects to table rows
+        document.querySelectorAll('.table-professional tbody tr').forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.01)';
+                this.style.transition = 'transform 0.2s ease';
+            });
+            
+            row.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Animate stats on load
+        window.addEventListener('load', function() {
+            document.querySelectorAll('.stat-number').forEach((stat, index) => {
+                const finalValue = parseInt(stat.textContent);
+                let currentValue = 0;
+                const increment = finalValue / 30;
+                
+                const timer = setInterval(() => {
+                    currentValue += increment;
+                    if (currentValue >= finalValue) {
+                        stat.textContent = finalValue;
+                        clearInterval(timer);
+                    } else {
+                        stat.textContent = Math.floor(currentValue);
+                    }
+                }, 50);
+            });
+        });
+    </script>
 </body>
 </html>

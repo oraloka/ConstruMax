@@ -1,47 +1,349 @@
-{% extends 'base.html' %}
+{% extends 'main.html' %}
+
+{% block title %}Mi Carrito - ConstruMax{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cart-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 24px 24px;
+    }
+
+    .cart-table {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px var(--shadow-light);
+        overflow: hidden;
+    }
+
+    .table th {
+        background: var(--accent-color);
+        color: var(--primary-color);
+        font-weight: 600;
+        border: none;
+        padding: 1rem;
+    }
+
+    .table td {
+        padding: 1rem;
+        vertical-align: middle;
+        border-color: rgba(139, 115, 85, 0.1);
+    }
+
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .quantity-input {
+        width: 70px;
+        text-align: center;
+        border: 2px solid var(--accent-color);
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    .btn-update {
+        background: var(--steel-blue);
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-update:hover {
+        background: #2d3748;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .btn-remove {
+        background: #dc2626;
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-remove:hover {
+        background: #b91c1c;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .total-section {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px var(--shadow-light);
+        padding: 2rem;
+        margin: 2rem 0;
+    }
+
+    .total-amount {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--construction-orange);
+        text-align: right;
+    }
+
+    .payment-card {
+        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        color: white;
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem 0;
+        box-shadow: 0 8px 30px rgba(251, 191, 36, 0.3);
+    }
+
+    .payment-option {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 1rem;
+        margin: 0.5rem 0;
+        transition: all 0.3s ease;
+    }
+
+    .payment-option:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .payment-option input[type="radio"] {
+        margin-right: 0.75rem;
+    }
+
+    .qr-section, .number-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    .qr-code {
+        max-width: 180px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .nequi-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 1rem;
+        border-radius: 12px;
+        margin: 1rem 0;
+    }
+
+    .btn-checkout {
+        background: var(--construction-orange);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .btn-checkout:hover {
+        background: #e55a2b;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+    }
+
+    .empty-cart {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px var(--shadow-light);
+    }
+
+    .warning-alert {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h2>Mi Carrito</h2>
+<div class="cart-header">
+    <div class="container">
+        <h1 class="font-display mb-2">
+            <i class="fas fa-shopping-cart me-3"></i>Mi Carrito de Compras
+        </h1>
+        <p class="mb-0 opacity-90">Revisa tus productos antes de realizar el pedido</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="warning-alert">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+            <div>
+                <strong>Importante:</strong> Antes de hacer el pedido, asegúrate de tener saldo suficiente en tu cuenta Nequi para completar el pago. El pedido solo será procesado si el pago se realiza correctamente.
+            </div>
+        </div>
+    </div>
+
     {% if items %}
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio unitario</th>
-                <th>Total</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in items %}
-            <tr>
-                <td>{{ item.product_name }}</td>
-                <td>
-                    <form action="{{ url_for('cart.update_quantity', item_id=item.id) }}" method="post" class="d-inline-flex align-items-center">
-                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control form-control-sm me-2" style="width:70px;">
-                        <button type="submit" class="btn btn-info btn-sm me-1">Actualizar</button>
-                    </form>
-                </td>
-                <td>{{ item.price|cop }}</td>
-                <td>{{ (item.quantity * item.price)|cop }}</td>
-                <td>
-                    <form action="{{ url_for('cart.remove_from_cart', item_id=item.id) }}" method="post" style="display:inline;">
-                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div class="text-end fw-bold fs-5 mb-3">Total a pagar: {{ total_general|cop }}</div>
-    <form action="{{ url_for('orders.create_order') }}" method="post" class="text-end">
-        <button type="submit" class="btn btn-success">Hacer pedido</button>
-    </form>
-    <a href="{{ url_for('auth.dashboard') }}" class="btn btn-primary mt-3"><i class="fas fa-arrow-left"></i> Seguir añadiendo productos</a>
+    <div class="cart-table">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-box me-2"></i>Producto</th>
+                    <th><i class="fas fa-sort-numeric-up me-2"></i>Cantidad</th>
+                    <th><i class="fas fa-tag me-2"></i>Precio Unitario</th>
+                    <th><i class="fas fa-calculator me-2"></i>Total</th>
+                    <th><i class="fas fa-cogs me-2"></i>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>
+                        <div class="fw-semibold">{{ item.product_name }}</div>
+                    </td>
+                    <td>
+                        <form action="{{ url_for('cart.update_quantity', item_id=item.id) }}" method="post" class="quantity-controls">
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control quantity-input">
+                            <button type="submit" class="btn btn-update">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </form>
+                    </td>
+                    <td class="fw-semibold">{{ item.price|cop }}</td>
+                    <td class="fw-bold text-success">{{ (item.quantity * item.price)|cop }}</td>
+                    <td>
+                        <form action="{{ url_for('cart.remove_from_cart', item_id=item.id) }}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-remove" onclick="return confirm('¿Eliminar este producto del carrito?')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="total-section">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h4 class="font-display mb-0">Total a Pagar:</h4>
+            </div>
+            <div class="col-md-6">
+                <div class="total-amount">{{ total_general|cop }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="payment-card">
+        <h4 class="font-display mb-4">
+            <i class="fas fa-credit-card me-3"></i>Método de Pago Nequi
+        </h4>
+        
+        <form action="{{ url_for('orders.create_order') }}" method="post">
+            <div class="payment-option">
+                <label class="d-flex align-items-center cursor-pointer">
+                    <input type="radio" name="metodo_pago" value="qr" checked>
+                    <div>
+                        <strong>Pagar con QR Nequi</strong>
+                        <div class="small opacity-90">Escanea el código QR con tu app Nequi</div>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="payment-option">
+                <label class="d-flex align-items-center cursor-pointer">
+                    <input type="radio" name="metodo_pago" value="numero">
+                    <div>
+                        <strong>Pagar con número Nequi</strong>
+                        <div class="small opacity-90">Transfiere al número indicado</div>
+                    </div>
+                </label>
+            </div>
+            
+            <div id="qr_pago" class="qr-section">
+                <h5 class="mb-3">
+                    <i class="fas fa-qrcode me-2"></i>Escanea este QR con Nequi:
+                </h5>
+                <img src="{{ url_for('static', filename='img/nequi_qr.png') }}" alt="QR Nequi" class="qr-code mb-3">
+                <p class="mb-0">O paga al número: <strong>3XX XXX XXXX</strong></p>
+            </div>
+            
+            <div id="numero_pago" class="number-section" style="display:none;">
+                <h5 class="mb-3">
+                    <i class="fas fa-mobile-alt me-2"></i>Paga al número Nequi:
+                </h5>
+                <div class="nequi-number">3XX XXX XXXX</div>
+                <p class="mb-0">Transfiere el monto exacto desde tu app Nequi</p>
+            </div>
+            
+            <button type="submit" class="btn btn-checkout mt-4">
+                <i class="fas fa-shopping-bag me-2"></i>Hacer Pedido y Pagar
+            </button>
+        </form>
+    </div>
+
+    <div class="text-center">
+        <a href="{{ url_for('auth.dashboard') }}" class="btn btn-secondary-professional btn-lg">
+            <i class="fas fa-arrow-left me-2"></i>Seguir Comprando
+        </a>
+    </div>
+
     {% else %}
-    <p>No hay productos en el carrito.</p>
-    <a href="{{ url_for('auth.dashboard') }}" class="btn btn-primary mt-3"><i class="fas fa-arrow-left"></i> Ir a la tienda</a>
+    <div class="empty-cart">
+        <i class="fas fa-shopping-cart fa-4x text-muted mb-4"></i>
+        <h3 class="font-display mb-3">Tu carrito está vacío</h3>
+        <p class="text-muted mb-4">¡Explora nuestro catálogo y encuentra los mejores materiales de construcción!</p>
+        <a href="{{ url_for('auth.dashboard') }}" class="btn btn-professional btn-lg">
+            <i class="fas fa-store me-2"></i>Ir a la Tienda
+        </a>
+    </div>
     {% endif %}
 </div>
+
+<script>
+// Toggle payment method display
+document.getElementById('pago_qr').addEventListener('change', function() {
+    document.getElementById('qr_pago').style.display = 'block';
+    document.getElementById('numero_pago').style.display = 'none';
+});
+
+document.getElementById('pago_numero').addEventListener('change', function() {
+    document.getElementById('qr_pago').style.display = 'none';
+    document.getElementById('numero_pago').style.display = 'block';
+});
+
+// Handle radio button changes
+document.querySelectorAll('input[name="metodo_pago"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        if (this.value === 'qr') {
+            document.getElementById('qr_pago').style.display = 'block';
+            document.getElementById('numero_pago').style.display = 'none';
+        } else {
+            document.getElementById('qr_pago').style.display = 'none';
+            document.getElementById('numero_pago').style.display = 'block';
+        }
+    });
+});
+</script>
 {% endblock %}

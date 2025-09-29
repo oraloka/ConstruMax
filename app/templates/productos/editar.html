@@ -1,58 +1,372 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container mt-5">
-    <h2>Editar producto</h2>
-    <form action="{{ url_for('productos.editar_producto', id=producto.id) }}" method="POST" enctype="multipart/form-data">
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="nombre">Nombre</label>
-                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ producto.nombre }}" required>
-            </div>
-            <div class="form-group col-md-6">
-                <label for="categoria">Categoría</label>
-                <input type="text" class="form-control" id="categoria" name="categoria" value="{{ producto.categoria }}" required>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="precio">Precio</label>
-                <input type="number" step="0.01" class="form-control" id="precio" name="precio" value="{{ producto.precio }}" required>
-            </div>
-            <div class="form-group col-md-6">
-                <label for="presentacion">Presentación</label>
-                <input type="text" class="form-control" id="presentacion" name="presentacion" value="{{ producto.presentacion }}">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="marca">Marca</label>
-                <input type="text" class="form-control" id="marca" name="marca" value="{{ producto.marca }}">
-            </div>
-            <div class="form-group col-md-6">
-                <label for="descripcion">Descripción</label>
-                <textarea class="form-control" id="descripcion" name="descripcion" rows="2" required>{{ producto.descripcion }}</textarea>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="stock">Stock</label>
-                <input type="number" class="form-control" id="stock" name="stock" min="0" value="{{ producto.stock }}" required>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="imagen">Imagen actual</label><br>
-            {% if producto.imagen %}
-                <img src="{{ producto.imagen }}" alt="Imagen actual" style="max-width:200px;">
-            {% else %}
-                <span class="text-muted">No hay imagen</span>
-            {% endif %}
-        </div>
-        <div class="form-group">
-            <label for="imagen">Cambiar imagen</label>
-            <input type="file" class="form-control-file" id="imagen" name="imagen">
-        </div>
-        <button type="submit" class="btn btn-success">Guardar cambios</button>
-        <a href="{{ url_for('auth.dashboard') }}" class="btn btn-secondary">Cancelar</a>
-    </form>
+<style>
+    :root {
+        --construction-orange: #FF6B35;
+        --concrete-gray: #8B8680;
+        --deep-black: #1A1A1A;
+        --light-beige: #F5F3F0;
+        --steel-gray: #4A4A4A;
+        --warm-white: #FEFEFE;
+        --success-green: #28a745;
+    }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, var(--light-beige) 0%, #F0EDE8 100%);
+        color: var(--deep-black);
+        min-height: 100vh;
+    }
+    
+    .hero-section {
+        background: linear-gradient(135deg, var(--deep-black) 0%, var(--steel-gray) 100%);
+        color: var(--warm-white);
+        padding: 3rem 0;
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="concrete" patternUnits="userSpaceOnUse" width="100" height="100"><rect width="100" height="100" fill="%23000"/><circle cx="20" cy="20" r="1" fill="%23333" opacity="0.3"/><circle cx="80" cy="40" r="1.5" fill="%23333" opacity="0.2"/><circle cx="40" cy="80" r="1" fill="%23333" opacity="0.4"/></pattern></defs><rect width="100" height="100" fill="url(%23concrete)"/></svg>') repeat;
+        opacity: 0.1;
+    }
+    
+    .hero-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .form-container {
+        background: var(--warm-white);
+        border-radius: 25px;
+        padding: 3rem;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+        border: 1px solid rgba(139, 134, 128, 0.2);
+        margin-bottom: 3rem;
+    }
+    
+    .form-section {
+        margin-bottom: 2.5rem;
+        padding: 1.5rem;
+        background: var(--light-beige);
+        border-radius: 15px;
+        border-left: 4px solid var(--construction-orange);
+    }
+    
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--deep-black);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .section-title i {
+        color: var(--construction-orange);
+        margin-right: 0.75rem;
+        font-size: 1.2rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--deep-black);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .form-label i {
+        color: var(--construction-orange);
+        margin-right: 0.5rem;
+        width: 16px;
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid rgba(139, 134, 128, 0.3);
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        background: var(--warm-white);
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: var(--construction-orange);
+        box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+        background: var(--warm-white);
+    }
+    
+    .current-image {
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        transition: transform 0.3s ease;
+        max-width: 250px;
+        height: auto;
+    }
+    
+    .current-image:hover {
+        transform: scale(1.05);
+    }
+    
+    .image-placeholder {
+        background: linear-gradient(135deg, var(--light-beige) 0%, #F0EDE8 100%);
+        border: 2px dashed var(--concrete-gray);
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        color: var(--steel-gray);
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, var(--construction-orange) 0%, #E55A2B 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 3rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 1.1rem;
+    }
+    
+    .btn-success:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+        background: linear-gradient(135deg, #E55A2B 0%, var(--construction-orange) 100%);
+    }
+    
+    .btn-secondary {
+        background: var(--concrete-gray);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover {
+        background: var(--steel-gray);
+        transform: translateY(-2px);
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.6s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .product-info-badge {
+        background: linear-gradient(135deg, var(--concrete-gray) 0%, #9B9691 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="hero-section">
+    <div class="container text-center">
+        <h1 class="hero-title">
+            <i class="fas fa-edit me-3"></i>
+            Editar Producto
+        </h1>
+        <p class="hero-subtitle">Actualiza la información del producto en tu inventario</p>
+    </div>
 </div>
+
+<div class="container">
+    <div class="form-container fade-in">
+        <div class="product-info-badge">
+            <i class="fas fa-tag me-2"></i>
+            Editando: {{ producto.nombre }}
+        </div>
+        
+        <form action="{{ url_for('productos.editar_producto', id=producto.id) }}" method="POST" enctype="multipart/form-data">
+            
+             Información Básica 
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-info-circle"></i>
+                    Información Básica
+                </h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="nombre" class="form-label">
+                            <i class="fas fa-tag"></i>
+                            Nombre del Producto
+                        </label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" value="{{ producto.nombre }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="categoria" class="form-label">
+                            <i class="fas fa-layer-group"></i>
+                            Categoría
+                        </label>
+                        <input type="text" class="form-control" id="categoria" name="categoria" value="{{ producto.categoria }}" required>
+                    </div>
+                </div>
+            </div>
+
+             Precios y Presentación 
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-dollar-sign"></i>
+                    Precios y Presentación
+                </h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="precio" class="form-label">
+                            <i class="fas fa-money-bill-wave"></i>
+                            Precio
+                        </label>
+                        <input type="number" step="0.01" class="form-control" id="precio" name="precio" value="{{ producto.precio }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="presentacion" class="form-label">
+                            <i class="fas fa-box-open"></i>
+                            Presentación
+                        </label>
+                        <input type="text" class="form-control" id="presentacion" name="presentacion" value="{{ producto.presentacion }}" placeholder="Ej: Bulto 50kg, Galón, Unidad">
+                    </div>
+                </div>
+            </div>
+
+             Detalles del Producto 
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-clipboard-list"></i>
+                    Detalles del Producto
+                </h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="marca" class="form-label">
+                            <i class="fas fa-industry"></i>
+                            Marca
+                        </label>
+                        <input type="text" class="form-control" id="marca" name="marca" value="{{ producto.marca }}" placeholder="Marca del producto">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="stock" class="form-label">
+                            <i class="fas fa-warehouse"></i>
+                            Stock
+                        </label>
+                        <input type="number" class="form-control" id="stock" name="stock" min="0" value="{{ producto.stock }}" required>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <label for="descripcion" class="form-label">
+                            <i class="fas fa-align-left"></i>
+                            Descripción
+                        </label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required>{{ producto.descripcion }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+             Imagen del Producto 
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-image"></i>
+                    Imagen del Producto
+                </h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <i class="fas fa-eye"></i>
+                            Imagen Actual
+                        </label>
+                        <div class="mt-2">
+                            {% if producto.imagen %}
+                                <img src="{{ producto.imagen }}" alt="Imagen actual" class="current-image">
+                            {% else %}
+                                <div class="image-placeholder">
+                                    <i class="fas fa-image fa-3x mb-2"></i>
+                                    <p>No hay imagen disponible</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="imagen" class="form-label">
+                            <i class="fas fa-upload"></i>
+                            Cambiar Imagen
+                        </label>
+                        <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*">
+                        <small class="form-text text-muted">Formatos aceptados: JPG, PNG, GIF. Tamaño máximo: 5MB</small>
+                    </div>
+                </div>
+            </div>
+
+             Botones de Acción 
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-success me-3">
+                    <i class="fas fa-save me-2"></i>
+                    Guardar Cambios
+                </button>
+                <a href="{{ url_for('auth.dashboard') }}" class="btn btn-secondary">
+                    <i class="fas fa-times me-2"></i>
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animación de entrada
+    const container = document.querySelector('.form-container');
+    container.style.opacity = '0';
+    container.style.transform = 'translateY(30px)';
+    
+    setTimeout(() => {
+        container.style.transition = 'all 0.6s ease';
+        container.style.opacity = '1';
+        container.style.transform = 'translateY(0)';
+    }, 200);
+    
+    // Preview de imagen al seleccionar archivo
+    document.getElementById('imagen').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const currentImage = document.querySelector('.current-image');
+                if (currentImage) {
+                    currentImage.src = e.target.result;
+                } else {
+                    const placeholder = document.querySelector('.image-placeholder');
+                    if (placeholder) {
+                        placeholder.innerHTML = `<img src="${e.target.result}" alt="Nueva imagen" class="current-image">`;
+                    }
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+});
+</script>
 {% endblock %}

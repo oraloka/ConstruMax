@@ -3,48 +3,417 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Inicia sesión en la tienda virtual de materiales de construcción Corona">
-    <title>Login</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <meta name="description" content="Inicia sesión en ConstructoPro - Tu tienda de materiales de construcción">
+    <title>ConstructoPro - Iniciar Sesión</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Complete redesign with industrial construction aesthetic */
+        :root {
+            --concrete-light: #F5F3F0;
+            --concrete-medium: #8B8680;
+            --concrete-dark: #1A1A1A;
+            --construction-orange: #FF6B35;
+            --construction-red: #E74C3C;
+            --steel-gray: #4A5568;
+            --warm-white: #FEFEFE;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--concrete-light) 0%, #E8E6E1 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(0,0,0,0.02) 1px, transparent 1px),
+                radial-gradient(circle at 75% 75%, rgba(0,0,0,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-card {
+            background: var(--warm-white);
+            border-radius: 16px;
+            padding: 60px 50px;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--construction-orange), var(--construction-red));
+        }
+
+        .logo-construction {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            gap: 16px;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--construction-orange), var(--construction-red));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--concrete-dark);
+            letter-spacing: -0.02em;
+        }
+
+        .logo-subtitle {
+            font-size: 14px;
+            color: var(--concrete-medium);
+            font-weight: 500;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .login-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 600;
+            color: var(--concrete-dark);
+            text-align: center;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: var(--concrete-medium);
+            font-size: 16px;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .alert-professional {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .alert-warning {
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            color: var(--construction-orange);
+        }
+
+        .form-group-professional {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-label-professional {
+            display: block;
+            font-weight: 600;
+            color: var(--concrete-dark);
+            margin-bottom: 8px;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+        }
+
+        .construction-icon {
+            color: var(--construction-orange);
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        .form-control-professional {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--warm-white);
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-control-professional:focus {
+            outline: none;
+            border-color: var(--construction-orange);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .captcha-group {
+            background: rgba(255, 107, 53, 0.05);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 107, 53, 0.15);
+            position: relative;
+        }
+
+        .captcha-group::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--construction-orange);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .login-actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .btn-professional {
+            flex: 1;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, var(--construction-orange), var(--construction-red));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-professional:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-secondary-professional {
+            background: var(--warm-white);
+            color: var(--concrete-dark);
+            border: 2px solid #E2E8F0;
+        }
+
+        .btn-secondary-professional:hover {
+            background: var(--concrete-light);
+            border-color: var(--concrete-medium);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-links {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #E2E8F0;
+        }
+
+        .login-links p {
+            color: var(--concrete-medium);
+            font-size: 15px;
+        }
+
+        .login-links a {
+            color: var(--construction-orange);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .login-links a:hover {
+            color: var(--construction-red);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .login-card {
+                padding: 40px 30px;
+                margin: 20px;
+            }
+
+            .login-title {
+                font-size: 28px;
+            }
+
+            .login-actions {
+                flex-direction: column;
+            }
+
+            .logo-text {
+                font-size: 24px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <main>
-        <div class="container mt-5">
-            <div class="col-md-6 offset-md-3 login-container">
-                <h2>Login</h2>
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}             
-                        {% for category, message in messages %}
-                            {% if 'bloqueado' in message.lower() %}
-                                <div class="flash-message alert alert-warning" role="alert">{{ message }}</div>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-
-                <form method="post" action="{{ url_for('auth.login') }}">
-                    <div class="form-group">
-                        <label for="nameUser">Usuario</label>
-                        <input type="text" name="nameUser" id="nameUser" class="form-control" required aria-required="true">
-                    </div>
-                    <div class="form-group">
-                        <label for="passwordUser">Contraseña</label>
-                        <input type="password" name="passwordUser" id="passwordUser" class="form-control" required aria-required="true">
-                    </div>
-                     <div class="form-group mt-3">
-                         <label for="captcha">{{ captcha_question }}</label>
-                         <input type="text" name="captcha" id="captcha" class="form-control" required aria-required="true">
-                     </div>
-                    <button type="submit" class="btn btn-primary" aria-label="Iniciar sesión">Login</button>
-                    <a href="/" class="btn btn-secondary ml-2" aria-label="Volver a la vista principal">Volver</a>
-                </form>
-                <div class="mt-3 login-links">
-                    <a href="{{ url_for('register.register') }}">Don't have an account? Register</a>
+    <main class="login-container">
+        <div class="login-card">
+            <!-- Enhanced logo with construction branding -->
+            <div class="logo-construction">
+                <div class="logo-icon">
+                    <i class="fas fa-hard-hat"></i>
                 </div>
+                <div>
+                    <div class="logo-text">ConstructoPro</div>
+                    <div class="logo-subtitle">Materiales de Construcción</div>
+                </div>
+            </div>
+            
+            <h1 class="login-title">Bienvenido de vuelta</h1>
+            <p class="login-subtitle">Ingresa a tu cuenta para continuar con tus proyectos</p>
+
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}             
+                    {% for category, message in messages %}
+                        {% if 'bloqueado' in message.lower() %}
+                            <div class="alert-professional alert-warning" role="alert">
+                                <i class="fas fa-exclamation-triangle construction-icon"></i>
+                                {{ message }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Login form -->
+            <form method="post" action="{{ url_for('auth.login') }}" class="login-form">
+                <div class="form-group-professional">
+                    <label for="nameUser" class="form-label-professional">
+                        <i class="fas fa-user construction-icon"></i>Usuario
+                    </label>
+                    <input type="text" name="nameUser" id="nameUser" class="form-control-professional" required aria-required="true" placeholder="Ingresa tu nombre de usuario">
+                </div>
+
+                <div class="form-group-professional">
+                    <label for="passwordUser" class="form-label-professional">
+                        <i class="fas fa-lock construction-icon"></i>Contraseña
+                    </label>
+                    <input type="password" name="passwordUser" id="passwordUser" class="form-control-professional" required aria-required="true" placeholder="Ingresa tu contraseña">
+                </div>
+
+                <div class="form-group-professional captcha-group">
+                    <label for="captcha" class="form-label-professional">
+                        <i class="fas fa-shield-alt construction-icon"></i>{{ captcha_question }}
+                    </label>
+                    <input type="text" name="captcha" id="captcha" class="form-control-professional" required aria-required="true" placeholder="Respuesta de seguridad">
+                </div>
+
+                <div class="login-actions">
+                    <button type="submit" class="btn-professional" aria-label="Iniciar sesión">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
+                    <a href="/" class="btn-professional btn-secondary-professional" aria-label="Volver a la vista principal">
+                        <i class="fas fa-home"></i> Volver
+                    </a>
+                </div>
+            </form>
+
+            <div class="login-links">
+                <p>¿No tienes una cuenta? 
+                    <a href="{{ url_for('register.register') }}">
+                        <i class="fas fa-user-plus"></i> Regístrate aquí
+                    </a>
+                </p>
             </div>
         </div>
     </main>
+
+    <script>
+        // Add loading animation to form submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iniciando sesión...';
+            submitBtn.disabled = true;
+        });
+
+        // Add focus animations
+        document.querySelectorAll('.form-control-professional').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.style.transition = 'transform 0.3s ease';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+    </script>
 </body>
 </html>
