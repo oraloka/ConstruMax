@@ -11,6 +11,16 @@ def create_app():
     app.config['SECRET_KEY'] = os.urandom(24)
     app.config.from_object('config.Config')
 
+    # Configuración de Flask-Mail (debe ir después de crear 'app')
+    from app.mail import mail
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.config['MAIL_PORT'] = 587
+    app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USERNAME'] = 'cuentaintercambio606@gmail.com'  # Cambia esto por tu correo real
+    app.config['MAIL_PASSWORD'] = 'lryy kysq zxkh hzsq'        # Cambia esto por tu contraseña real o usa variable de entorno
+    app.config['MAIL_DEFAULT_SENDER'] = 'cuentaintercambio606@gmail.com'
+    mail.init_app(app)
+
     db.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
@@ -25,11 +35,15 @@ def create_app():
     from app.routes import users_route
     from app.routes import cart
     from app.routes import orders
+    from app.routes import cotizar
+    from app.routes import reset_password
     app.register_blueprint(auth.bp)
     app.register_blueprint(register.bp)
     app.register_blueprint(users_route.bp)
     app.register_blueprint(cart.bp)
     app.register_blueprint(orders.bp)
+    app.register_blueprint(cotizar.bp)
+    app.register_blueprint(reset_password.bp)
 
     # Ruta principal para la vista principal
     # Filtro para mostrar precios en formato COP
@@ -40,6 +54,14 @@ def create_app():
             return Markup(f'$ {value:,.0f}'.replace(',', '.'))
         except Exception:
             return value
+
+    # Filtro para separar miles con coma
+    def comma_format(value):
+        try:
+            return f"{int(value):,}".replace(",", ".")
+        except Exception:
+            return value
+    app.jinja_env.filters['comma'] = comma_format
     app.jinja_env.filters['cop'] = cop_format
 
     @app.route('/')

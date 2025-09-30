@@ -47,7 +47,19 @@ def accept_order(order_id):
                 producto.stock = max(producto.stock - item.quantity, 0)
         order.status = 'aceptado'
         db.session.commit()
-        flash('Pedido aceptado y stock actualizado.', 'success')
+        # Enviar correo al cliente
+        from app.models.users import Users
+        from flask_mail import Message
+        from app.mail import mail
+        user = Users.query.get(order.user_id)
+        if user and user.email:
+            msg = Message('Tu pedido en ConstruMax fue aceptado', recipients=[user.email])
+            msg.body = f"Hola {user.nameUser},\n\nTu pedido #{order.id} ha sido aceptado y está en proceso. Pronto recibirás más información sobre el envío.\n\n¡Gracias por confiar en ConstruMax!"
+            try:
+                mail.send(msg)
+            except Exception as e:
+                flash(f'No se pudo enviar el correo: {e}', 'warning')
+        flash('Pedido aceptado, stock actualizado y correo enviado al cliente.', 'success')
     else:
         flash('Pedido no encontrado o ya aceptado.', 'danger')
     # Redirigir al panel de admin
