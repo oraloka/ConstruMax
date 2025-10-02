@@ -788,12 +788,36 @@
                                     </button>
                                 </form>
                                 {% endif %}
+                                <button class="btn-sm-professional btn-info-professional" onclick="mostrarDetallePedido('{{ pedido.id }}')">
+                                    <i class="fas fa-search"></i> Ver Detalle
+                                </button>
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+            <!-- Modal Detalle Pedido -->
+            <div class="modal" id="modalDetallePedido" tabindex="-1" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5);">
+                <div style="background:#fff; margin:5vh auto; padding:20px; border-radius:12px; width:90vw; max-width:600px; position:relative;">
+                    <h5>Detalle del Pedido</h5>
+                    <div id="detallePedidoContenido"></div>
+                    <button type="button" class="btn btn-secondary mt-2" onclick="cerrarDetallePedido()">Cerrar</button>
+                </div>
+            </div>
+            <script>
+            function mostrarDetallePedido(orderId) {
+                fetch(`/orders/detalle/` + orderId)
+                    .then(res => res.text())
+                    .then(html => {
+                        document.getElementById('detallePedidoContenido').innerHTML = html;
+                        document.getElementById('modalDetallePedido').style.display = 'block';
+                    });
+            }
+            function cerrarDetallePedido() {
+                document.getElementById('modalDetallePedido').style.display = 'none';
+            }
+            </script>
         </div>
     </div>
 

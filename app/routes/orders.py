@@ -16,6 +16,45 @@ def create_order():
     if not cart or not cart.items:
         flash('El carrito está vacío.', 'danger')
         return redirect(url_for('cart.view_cart'))
+    metodo_pago = request.form.get('metodo_pago')
+    # Obtener dirección y coordenadas
+    direccion_envio = request.form.get('direccion_envio')
+    latitud_envio = request.form.get('latitud_envio')
+    longitud_envio = request.form.get('longitud_envio')
+    if metodo_pago == 'efectivo':
+        order = Order(user_id=current_user.idUser, status='pendiente')
+        order.direccion_envio = direccion_envio
+        order.latitud_envio = latitud_envio
+        order.longitud_envio = longitud_envio
+        db.session.add(order)
+        db.session.commit()
+        for item in cart.items:
+            order_item = OrderItem(order_id=order.id, product_id=item.product_id, product_name=item.product_name, quantity=item.quantity, price=item.price)
+            db.session.add(order_item)
+        db.session.delete(cart)
+        db.session.commit()
+        flash('Pedido realizado correctamente. Pagarás en efectivo al recibir el pedido.', 'success')
+        return redirect(url_for('orders.view_orders'))
+    elif metodo_pago == 'tarjeta':
+        # Simulación de pago con tarjeta
+        nombre_tarjeta = request.form.get('nombre_tarjeta')
+        numero_tarjeta = request.form.get('numero_tarjeta')
+        expiracion_tarjeta = request.form.get('expiracion_tarjeta')
+        cvv_tarjeta = request.form.get('cvv_tarjeta')
+        # No se almacena nada, solo simula
+        order = Order(user_id=current_user.idUser, status='pendiente')
+        order.direccion_envio = direccion_envio
+        order.latitud_envio = latitud_envio
+        order.longitud_envio = longitud_envio
+        db.session.add(order)
+        db.session.commit()
+        for item in cart.items:
+            order_item = OrderItem(order_id=order.id, product_id=item.product_id, product_name=item.product_name, quantity=item.quantity, price=item.price)
+            db.session.add(order_item)
+        db.session.delete(cart)
+        db.session.commit()
+        flash('Pago simulado con tarjeta realizado correctamente. Pedido registrado.', 'success')
+        return redirect(url_for('orders.view_orders'))
     # Procesar comprobante de pago
     file = request.files.get('comprobante_pago')
     if not file or file.filename == '':
@@ -27,6 +66,9 @@ def create_order():
     filepath = os.path.join(upload_folder, filename)
     file.save(filepath)
     order = Order(user_id=current_user.idUser, status='pendiente')
+    order.direccion_envio = direccion_envio
+    order.latitud_envio = latitud_envio
+    order.longitud_envio = longitud_envio
     db.session.add(order)
     db.session.commit()
     for item in cart.items:
@@ -38,17 +80,40 @@ def create_order():
     db.session.delete(cart)
     db.session.commit()
 
-    # Notificar al admin por correo
+    # Notificar al admin por correo (asegura que el correo se envía en todos los métodos)
     from flask_mail import Message
     from app.mail import mail
-    admin_email = 'cuentaintercambio606@gmail.com'  # Puedes cambiarlo si el admin es otro
+    from app.models.users import Users
+    # Buscar el primer usuario admin en la base de datos
+    admin_user = Users.query.filter_by(role='admin').first()
+    admin_email = admin_user.email if admin_user else 'cuentaintercambio606@gmail.com'
     msg = Message(
         subject=f'Nuevo pedido #{order.id} pendiente de aprobación',
         recipients=[admin_email],
-        body=f'Se ha realizado un nuevo pedido #{order.id} por el usuario {current_user.nameUser} ({current_user.email}).\n\nRevisa el comprobante de pago adjunto para aceptar o rechazar el pedido.',
+        body=f'Se ha realizado un nuevo pedido #{order.id} por el usuario {current_user.nameUser} ({current_user.email}).\n\nRevisa el comprobante de pago o la evidencia adjunta para aceptar o rechazar el pedido.\nDirección de entrega: {order.direccion_envio or "No especificada"}',
     )
-    with open(filepath, 'rb') as fp:
-        msg.attach(filename, file.mimetype, fp.read())
+    if metodo_pago == 'numero' and file and file.filename != '':
+        filename = secure_filename(file.filename)
+        upload_folder = os.path.join('static', 'comprobantes')
+        os.makedirs(upload_folder, exist_ok=True)
+        filepath = os.path.join(upload_folder, filename)
+        file.save(filepath)
+        payment_proof = PaymentProof(order_id=order.id, filename=filename, mimetype=file.mimetype)
+        db.session.add(payment_proof)
+        db.session.commit()
+        with open(filepath, 'rb') as fp:
+            msg.attach(filename, file.mimetype, fp.read())
+    elif metodo_pago == 'efectivo' and file and file.filename != '':
+        filename = secure_filename(file.filename)
+        upload_folder = os.path.join('static', 'comprobantes')
+        os.makedirs(upload_folder, exist_ok=True)
+        filepath = os.path.join(upload_folder, filename)
+        file.save(filepath)
+        payment_proof = PaymentProof(order_id=order.id, filename=filename, mimetype=file.mimetype)
+        db.session.add(payment_proof)
+        db.session.commit()
+        with open(filepath, 'rb') as fp:
+            msg.attach(filename, file.mimetype, fp.read())
     try:
         mail.send(msg)
     except Exception as e:
@@ -121,3 +186,36 @@ def generate_invoice(order_id):
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = f'attachment; filename=factura_{order.id}.pdf'
     return response
+
+@bp.route('/detalle/<int:order_id>')
+@login_required
+def detalle_pedido(order_id):
+    order = Order.query.get_or_404(order_id)
+    user = db.session.query(Cart).get(order.user_id)
+    from app.models.users import Users
+    usuario = Users.query.get(order.user_id)
+    return render_template_string('''
+        <div><strong>ID Pedido:</strong> {{ order.id }}</div>
+        <div><strong>Fecha:</strong> {{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</div>
+        <div><strong>Estado:</strong> {{ order.status }}</div>
+        <div><strong>Usuario:</strong> {{ usuario.nameUser if usuario else order.user_id }} (ID: {{ order.user_id }})</div>
+        <div><strong>Email:</strong> {{ usuario.email if usuario else '' }}</div>
+        <div><strong>Dirección de entrega:</strong> {{ order.direccion_envio or 'No especificada' }}</div>
+        {% if order.latitud_envio and order.longitud_envio %}
+        <div><a href="https://www.google.com/maps/search/?api=1&query={{ order.latitud_envio }},{{ order.longitud_envio }}" target="_blank">Ver en Google Maps</a></div>
+        {% endif %}
+        <div><strong>Productos:</strong>
+            <ul>
+            {% for item in order.items %}
+                <li>{{ item.product_name }} x{{ item.quantity }} ({{ item.price }} c/u)</li>
+            {% endfor %}
+            </ul>
+        </div>
+        <div><strong>Comprobante:</strong>
+            {% if order.payment_proof %}
+                <a href="{{ url_for('static', filename='comprobantes/' ~ order.payment_proof.filename) }}" target="_blank">Ver imagen</a>
+            {% else %}
+                No subido
+            {% endif %}
+        </div>
+    ''', order=order, usuario=usuario)

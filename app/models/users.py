@@ -44,6 +44,9 @@ class Order(db.Model):
     status = db.Column(db.String(20), default='pendiente')  # aceptado, en_camino, entregado
     items = db.relationship('OrderItem', backref='order', lazy=True, cascade="all, delete-orphan")
     payment_proof_id = db.Column(db.Integer, db.ForeignKey('payment_proof.id'))  # Relación con comprobante de pago
+    direccion_envio = db.Column(db.String(255))
+    latitud_envio = db.Column(db.String(64))
+    longitud_envio = db.Column(db.String(64))
 
 class OrderItem(db.Model):
     __tablename__ = 'order_item'

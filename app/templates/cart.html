@@ -180,6 +180,30 @@
         padding: 1.5rem;
         margin-bottom: 2rem;
     }
+
+    .card-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        display: none;
+    }
+
+    #leafletMapModal .leaflet-routing-container {
+        display: none !important;
+    }
+    #leafletMap {
+        width: 100% !important;
+        height: 350px !important;
+        min-height: 300px;
+        z-index: 10000;
+    }
+    #leafletMapModal {
+        overflow-y: auto;
+    }
+    .leaflet-container {
+        font-size: 1em;
+    }
 </style>
 {% endblock %}
 
@@ -263,43 +287,49 @@
         <form action="{{ url_for('orders.create_order') }}" method="post" enctype="multipart/form-data">
             <div class="payment-option">
                 <label class="d-flex align-items-center cursor-pointer">
-                    <input type="radio" name="metodo_pago" value="qr" checked>
-                    <div>
-                        <strong>Pagar con QR Nequi</strong>
-                        <div class="small opacity-90">Escanea el código QR con tu app Nequi</div>
-                    </div>
-                </label>
-            </div>
-            
-            <div class="payment-option">
-                <label class="d-flex align-items-center cursor-pointer">
-                    <input type="radio" name="metodo_pago" value="numero">
+                    <input type="radio" name="metodo_pago" value="numero" checked onclick="mostrarNumeroNequi()">
                     <div>
                         <strong>Pagar con número Nequi</strong>
                         <div class="small opacity-90">Transfiere al número indicado</div>
                     </div>
                 </label>
             </div>
-            
-            <div id="qr_pago" class="qr-section">
-                <h5 class="mb-3">
-                    <i class="fas fa-qrcode me-2"></i>Escanea este QR con Nequi:
-                </h5>
-                <img src="{{ url_for('static', filename='img/nequi_qr.png') }}" alt="QR Nequi" class="qr-code mb-3">
-                <p class="mb-0">O paga al número: <strong>3XX XXX XXXX</strong></p>
+            <div class="payment-option">
+                <label class="d-flex align-items-center cursor-pointer">
+                    <input type="radio" name="metodo_pago" value="efectivo" onclick="mostrarNumeroNequi()">
+                    <div>
+                        <strong>Pagar en efectivo contra entrega</strong>
+                        <div class="small opacity-90">El pago se realiza al recibir el pedido</div>
+                    </div>
+                </label>
             </div>
-            
-            <div id="numero_pago" class="number-section" style="display:none;">
+            <div id="numero_pago" class="number-section" style="display:block;">
                 <h5 class="mb-3">
                     <i class="fas fa-mobile-alt me-2"></i>Paga al número Nequi:
                 </h5>
-                <div class="nequi-number">3XX XXX XXXX</div>
+                <div class="nequi-number">3028653936</div>
                 <p class="mb-0">Transfiere el monto exacto desde tu app Nequi</p>
             </div>
             
             <div class="mb-3 mt-4">
+                <label for="direccion_envio" class="form-label">Selecciona la ubicación de entrega <span style="color:red;">*</span></label>
+                <input type="text" class="form-control" id="direccion_envio" name="direccion_envio" placeholder="Haz clic en el mapa para elegir la dirección" required readonly>
+                <input type="hidden" id="latitud_envio" name="latitud_envio">
+                <input type="hidden" id="longitud_envio" name="longitud_envio">
+                <div id="leafletMapModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); overflow:auto;">
+                    <div style="background:#fff; margin:5vh auto; padding:20px; border-radius:12px; width:90vw; max-width:600px; position:relative;">
+                        <h5>Selecciona la ubicación de entrega</h5>
+                        <div id="leafletMap"></div>
+                        <button type="button" class="btn btn-secondary mt-2" onclick="closeLeafletMapModal()">Cerrar</button>
+                    </div>
+                </div>
+                <div id="tiempo_estimado" class="mt-2 text-info" style="font-size:0.95em;"></div>
+            </div>
+            
+            <div class="mb-3 mt-4" id="comprobante_pago_group">
                 <label for="comprobante_pago" class="form-label">Sube el comprobante de pago <span style="color:red;">*</span></label>
-                <input type="file" class="form-control" id="comprobante_pago" name="comprobante_pago" accept="image/*" required>
+                <input type="file" class="form-control" id="comprobante_pago" name="comprobante_pago" accept="image/*">
+                <div id="comprobante_ayuda" class="form-text">Para Nequi: sube el comprobante de la transferencia. Para efectivo: sube una foto de tu cédula o documento de identidad.</div>
             </div>
             
             <button type="submit" class="btn btn-checkout mt-4">
@@ -326,29 +356,95 @@
     {% endif %}
 </div>
 
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 <script>
-// Toggle payment method display
-document.getElementById('pago_qr').addEventListener('change', function() {
-    document.getElementById('qr_pago').style.display = 'block';
-    document.getElementById('numero_pago').style.display = 'none';
-});
-
-document.getElementById('pago_numero').addEventListener('change', function() {
-    document.getElementById('qr_pago').style.display = 'none';
-    document.getElementById('numero_pago').style.display = 'block';
-});
-
-// Handle radio button changes
-document.querySelectorAll('input[name="metodo_pago"]').forEach(radio => {
-    radio.addEventListener('change', function() {
-        if (this.value === 'qr') {
-            document.getElementById('qr_pago').style.display = 'block';
-            document.getElementById('numero_pago').style.display = 'none';
+let leafletMap, leafletMarker, leafletRouting;
+const bodega = [5.9316, -73.6166]; // Centro urbano de Barbosa, Santander
+document.getElementById('direccion_envio').addEventListener('click', function() {
+    document.getElementById('leafletMapModal').style.display = 'block';
+    setTimeout(() => {
+        if (!leafletMap) {
+            leafletMap = L.map('leafletMap', { zoomControl: true }).setView(bodega, 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(leafletMap);
+            leafletMap.on('click', function(e) {
+                if (leafletMarker) leafletMap.removeLayer(leafletMarker);
+                leafletMarker = L.marker(e.latlng).addTo(leafletMap);
+                document.getElementById('latitud_envio').value = e.latlng.lat;
+                document.getElementById('longitud_envio').value = e.latlng.lng;
+                // Reverse geocoding
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('direccion_envio').value = data.display_name;
+                    });
+                // Calcular ruta y tiempo estimado
+                if (leafletRouting) leafletMap.removeControl(leafletRouting);
+                leafletRouting = L.Routing.control({
+                    waypoints: [L.latLng(bodega[0], bodega[1]), e.latlng],
+                    routeWhileDragging: false,
+                    draggableWaypoints: false,
+                    addWaypoints: false,
+                    show: false,
+                    createMarker: () => null
+                }).on('routesfound', function(e) {
+                    const duracion = e.routes[0].summary.totalTime;
+                    const minutos = Math.round(duracion / 60);
+                    const tiempoEmpaque = 15; // minutos extra por preparación y empaque
+                    const minutosTotales = minutos + tiempoEmpaque;
+                    document.getElementById('tiempo_estimado').innerText = 'Tiempo estimado de entrega: ' + minutosTotales + ' minutos (incluye preparación y empaque)';
+                }).addTo(leafletMap);
+            });
         } else {
-            document.getElementById('qr_pago').style.display = 'none';
-            document.getElementById('numero_pago').style.display = 'block';
+            leafletMap.setView(bodega, 14); // Siempre centrar en Barbosa al abrir
+            leafletMap.invalidateSize();
         }
+    }, 200);
+});
+window.closeLeafletMapModal = function() {
+    document.getElementById('leafletMapModal').style.display = 'none';
+};
+
+function mostrarNumeroNequi() {
+    const metodo = document.querySelector('input[name="metodo_pago"]:checked').value;
+    document.getElementById('numero_pago').style.display = metodo === 'numero' ? 'block' : 'none';
+}
+
+function mostrarComprobantePago() {
+        const metodo = document.querySelector('input[name="metodo_pago"]:checked').value;
+        const grupo = document.getElementById('comprobante_pago_group');
+        const ayuda = document.getElementById('comprobante_ayuda');
+        if (metodo === 'numero') {
+            grupo.style.display = 'block';
+            ayuda.innerText = 'Para Nequi: sube el comprobante de la transferencia.';
+            document.getElementById('comprobante_pago').required = true;
+        } else if (metodo === 'efectivo') {
+            grupo.style.display = 'block';
+            ayuda.innerText = 'Para efectivo: sube una foto de tu cédula o documento de identidad.';
+            document.getElementById('comprobante_pago').required = true;
+        } else {
+            grupo.style.display = 'none';
+            document.getElementById('comprobante_pago').required = false;
+        }
+    }
+    document.querySelectorAll('input[name="metodo_pago"]').forEach(radio => {
+        radio.addEventListener('change', mostrarComprobantePago);
     });
+    mostrarComprobantePago();
+
+document.querySelectorAll('input[name="metodo_pago"]').forEach(radio => {
+    radio.addEventListener('change', mostrarNumeroNequi);
+});
+mostrarNumeroNequi();
+
+// Inicializar visibilidad
+document.addEventListener('DOMContentLoaded', function() {
+    mostrarNumeroNequi();
 });
 </script>
 {% endblock %}

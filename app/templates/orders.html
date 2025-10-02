@@ -333,6 +333,12 @@
                                 <th scope="col">
                                     <i class="fas fa-image me-2"></i>Comprobante
                                 </th>
+                                <th scope="col">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Entrega
+                                </th>
+                                <th scope="col" style="width: 150px;">
+                                    Acciones
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -405,11 +411,59 @@
                                         <span class="text-muted">No subido</span>
                                     {% endif %}
                                 </td>
+                                <td>
+                                    {% if order.direccion_envio %}
+                                        <div><strong>Dirección:</strong> {{ order.direccion_envio }}</div>
+                                        {% if order.latitud_envio and order.longitud_envio %}
+                                            <div style="font-size:0.95em;">
+                                                <a href="https://www.google.com/maps/search/?api=1&query={{ order.latitud_envio }},{{ order.longitud_envio }}" target="_blank">
+                                                    Ver en Google Maps
+                                                </a>
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">No especificada</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button class="btn btn-info btn-sm" onclick="mostrarDetallePedido('{{ order.id }}')">
+                                        <i class="fas fa-search"></i> Ver Detalle
+                                    </button>
+                                    {% if current_user.role == 'admin' and order.status == 'pendiente' %}
+                                    <form action="{{ url_for('orders.accept_order', order_id=order.id) }}" method="post" style="display:inline;">
+                                        <button type="submit" class="action-btn btn-accept">
+                                            <i class="fas fa-check"></i>
+                                            Aceptar
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
+                <!-- Modal Detalle Pedido -->
+                <div class="modal" id="modalDetallePedido" tabindex="-1" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5);">
+                    <div style="background:#fff; margin:5vh auto; padding:20px; border-radius:12px; width:90vw; max-width:600px; position:relative;">
+                        <h5>Detalle del Pedido</h5>
+                        <div id="detallePedidoContenido"></div>
+                        <button type="button" class="btn btn-secondary mt-2" onclick="cerrarDetallePedido()">Cerrar</button>
+                    </div>
+                </div>
+                <script>
+                function mostrarDetallePedido(orderId) {
+                    fetch(`/orders/detalle/` + orderId)
+                        .then(res => res.text())
+                        .then(html => {
+                            document.getElementById('detallePedidoContenido').innerHTML = html;
+                            document.getElementById('modalDetallePedido').style.display = 'block';
+                        });
+                }
+                function cerrarDetallePedido() {
+                    document.getElementById('modalDetallePedido').style.display = 'none';
+                }
+                </script>
                 {% else %}
                 <div class="empty-state">
                     <i class="fas fa-clipboard-list"></i>
