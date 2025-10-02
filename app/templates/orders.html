@@ -330,6 +330,9 @@
                                 <th scope="col">
                                     <i class="fas fa-boxes me-2"></i>Productos
                                 </th>
+                                <th scope="col">
+                                    <i class="fas fa-image me-2"></i>Comprobante
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -392,6 +395,15 @@
                                         </li>
                                     {% endfor %}
                                     </ul>
+                                </td>
+                                <td>
+                                    {% if order.payment_proof %}
+                                        <a href="{{ url_for('static', filename='comprobantes/' ~ order.payment_proof.filename) }}" target="_blank">
+                                            <img src="{{ url_for('static', filename='comprobantes/' ~ order.payment_proof.filename) }}" alt="Comprobante" style="max-width:80px; max-height:80px; border-radius:8px; border:1px solid #ccc;">
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">No subido</span>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}

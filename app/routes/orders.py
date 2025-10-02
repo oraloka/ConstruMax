@@ -2,7 +2,10 @@ from flask import Blueprint, redirect, url_for, render_template, flash, make_res
 from flask_login import login_required, current_user
 from app import db
 from app.models.users import Cart, CartItem, Order, OrderItem
+from app.models.payment_proof import PaymentProof
 import pdfkit
+from werkzeug.utils import secure_filename
+import os
 
 bp = Blueprint('orders', __name__, url_prefix='/orders')
 
@@ -13,15 +16,45 @@ def create_order():
     if not cart or not cart.items:
         flash('El carrito está vacío.', 'danger')
         return redirect(url_for('cart.view_cart'))
+    # Procesar comprobante de pago
+    file = request.files.get('comprobante_pago')
+    if not file or file.filename == '':
+        flash('Debes subir el comprobante de pago.', 'danger')
+        return redirect(url_for('cart.view_cart'))
+    filename = secure_filename(file.filename)
+    upload_folder = os.path.join('static', 'comprobantes')
+    os.makedirs(upload_folder, exist_ok=True)
+    filepath = os.path.join(upload_folder, filename)
+    file.save(filepath)
     order = Order(user_id=current_user.idUser, status='pendiente')
     db.session.add(order)
     db.session.commit()
     for item in cart.items:
         order_item = OrderItem(order_id=order.id, product_id=item.product_id, product_name=item.product_name, quantity=item.quantity, price=item.price)
         db.session.add(order_item)
+    # Guardar comprobante en la base de datos
+    payment_proof = PaymentProof(order_id=order.id, filename=filename, mimetype=file.mimetype)
+    db.session.add(payment_proof)
     db.session.delete(cart)
     db.session.commit()
-    flash('Pedido realizado correctamente.', 'success')
+
+    # Notificar al admin por correo
+    from flask_mail import Message
+    from app.mail import mail
+    admin_email = 'cuentaintercambio606@gmail.com'  # Puedes cambiarlo si el admin es otro
+    msg = Message(
+        subject=f'Nuevo pedido #{order.id} pendiente de aprobación',
+        recipients=[admin_email],
+        body=f'Se ha realizado un nuevo pedido #{order.id} por el usuario {current_user.nameUser} ({current_user.email}).\n\nRevisa el comprobante de pago adjunto para aceptar o rechazar el pedido.',
+    )
+    with open(filepath, 'rb') as fp:
+        msg.attach(filename, file.mimetype, fp.read())
+    try:
+        mail.send(msg)
+    except Exception as e:
+        flash(f'No se pudo notificar al admin por correo: {e}', 'warning')
+
+    flash('Pedido realizado correctamente. El comprobante fue enviado para revisión.', 'success')
     return redirect(url_for('orders.view_orders'))
 
 @bp.route('/')

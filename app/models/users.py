@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 from app import db
+from app.models.payment_proof import PaymentProof
 
 
 class Users(db.Model, UserMixin):
@@ -42,6 +43,7 @@ class Order(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.now())
     status = db.Column(db.String(20), default='pendiente')  # aceptado, en_camino, entregado
     items = db.relationship('OrderItem', backref='order', lazy=True, cascade="all, delete-orphan")
+    payment_proof_id = db.Column(db.Integer, db.ForeignKey('payment_proof.id'))  # Relación con comprobante de pago
 
 class OrderItem(db.Model):
     __tablename__ = 'order_item'

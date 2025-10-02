@@ -260,7 +260,7 @@
             <i class="fas fa-credit-card me-3"></i>Método de Pago Nequi
         </h4>
         
-        <form action="{{ url_for('orders.create_order') }}" method="post">
+        <form action="{{ url_for('orders.create_order') }}" method="post" enctype="multipart/form-data">
             <div class="payment-option">
                 <label class="d-flex align-items-center cursor-pointer">
                     <input type="radio" name="metodo_pago" value="qr" checked>
@@ -295,6 +295,11 @@
                 </h5>
                 <div class="nequi-number">3XX XXX XXXX</div>
                 <p class="mb-0">Transfiere el monto exacto desde tu app Nequi</p>
+            </div>
+            
+            <div class="mb-3 mt-4">
+                <label for="comprobante_pago" class="form-label">Sube el comprobante de pago <span style="color:red;">*</span></label>
+                <input type="file" class="form-control" id="comprobante_pago" name="comprobante_pago" accept="image/*" required>
             </div>
             
             <button type="submit" class="btn btn-checkout mt-4">
