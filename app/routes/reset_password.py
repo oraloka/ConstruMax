@@ -20,7 +20,7 @@ def request_reset():
             token = secrets.token_urlsafe(32)
             token_store[token] = user.idUser
             reset_link = url_for('reset_password.reset_with_token', token=token, _external=True)
-            msg = Message('Recupera tu contraseña - ConstruMax', recipients=[email])
+            msg = Message('Recupera tu contraseña - construmax', recipients=[email])
             msg.body = f"Hola,\n\nPara restablecer tu contraseña haz clic en el siguiente enlace:\n{reset_link}\n\nSi no solicitaste este cambio, ignora este correo."
             try:
                 mail.send(msg)

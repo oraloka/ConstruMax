@@ -68,8 +68,8 @@ def enviar_email():
     html = render_template('cotizar_pdf.html', cotizacion=cotizacion)
     config = pdfkit.configuration(wkhtmltopdf=r'C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')
     pdf = pdfkit.from_string(html, False, configuration=config)
-    msg = Message('Tu cotización ConstruMax', recipients=[cotizacion['correo']])
-    msg.body = 'Adjunto encontrarás tu cotización profesional de ConstruMax.'
+    msg = Message('Tu cotización construmax', recipients=[cotizacion['correo']])
+    msg.body = 'Adjunto encontrarás tu cotización profesional de construmax.'
     msg.attach('cotizacion.pdf', 'application/pdf', pdf)
     mail = app.extensions.get('mail')
     mail.send(msg)

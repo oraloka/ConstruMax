@@ -131,8 +131,8 @@ def accept_order(order_id):
         from app.mail import mail
         user = Users.query.get(order.user_id)
         if user and user.email:
-            msg = Message('Tu pedido en ConstruMax fue aceptado', recipients=[user.email])
-            msg.body = f"Hola {user.nameUser},\n\nTu pedido #{order.id} ha sido aceptado y está en proceso. Pronto recibirás más información sobre el envío.\n\n¡Gracias por confiar en ConstruMax!"
+            msg = Message('Tu pedido en construmax fue aceptado', recipients=[user.email])
+            msg.body = f"Hola {user.nameUser},\n\nTu pedido #{order.id} ha sido aceptado y está en proceso. Pronto recibirás más información sobre el envío.\n\n¡Gracias por confiar en construmax!"
             try:
                 mail.send(msg)
             except Exception as e:
